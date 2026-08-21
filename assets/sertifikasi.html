@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kopi Gula Aren Amiraw | Cita Rasa Kopi & Gula Aren Asli</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        coffee: {
+                            50: '#fcf8f5',
+                            100: '#f7eee6',
+                            200: '#ebdccf',
+                            300: '#dcbeab',
+                            600: '#8c5338',
+                            700: '#6f3e28',
+                            800: '#532d1d',
+                            900: '#381c12',
+                            950: '#210f08'
+                        },
+                        amberGula: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Animate.css CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .font-serif-heading {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Custom delay helper */
+        .animate-delay-1 {
+            animation-delay: 0.2s;
+        }
+
+        .animate-delay-2 {
+            animation-delay: 0.4s;
+        }
+
+        .animate-delay-3 {
+            animation-delay: 0.6s;
+        }
+    </style>
+</head>
+
+<body class="bg-coffee-50 text-slate-800 antialiased selection:bg-amberGula-500 selection:text-white">
+
+    <!-- Top Announcement Bar -->
+    <div
+        class="bg-coffee-950 text-amberGula-400 text-xs py-2.5 px-4 text-center font-medium border-b border-coffee-800 flex items-center justify-center gap-2 animate__animated animate__fadeInDown">
+        <i data-lucide="sparkles" class="w-3.5 h-3.5 animate__animated animate__pulse animate__infinite"></i>
+        <span>100% Gula Aren Asli Alami & Biji Kopi Pilihan Berkualitas | Freshly Brewed</span>
+    </div>
+
+    <!-- Header / Navbar -->
+    <header
+        class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-coffee-100 shadow-sm animate__animated animate__fadeIn">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Brand Logo -->
+                <a href="#" class="flex items-center gap-3 group">
+                    <div
+                        class="w-11 h-11 rounded-2xl bg-gradient-to-br from-coffee-700 to-coffee-950 flex items-center justify-center text-amberGula-400 shadow-md shadow-coffee-900/20 group-hover:scale-105 transition-transform duration-300">
+                        <i data-lucide="coffee" class="w-6 h-6 animate__animated animate__swing animate__delay-1"></i>
+                    </div>
+                    <div>
+                        <span
+                            class="text-xl font-extrabold text-coffee-950 tracking-tight block font-serif-heading">Kopi
+                            Gula Aren <span class="text-amberGula-600">Amiraw</span></span>
+                        <span
+                            class="text-[10px] tracking-widest uppercase font-semibold text-slate-400 block -mt-0.5">Authentic
+                            Palm Sugar Coffee</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-700">
+                    <a href="#tentang" class="hover:text-amberGula-600 transition-colors">Tentang Kami</a>
+                    <a href="#keunggulan" class="hover:text-amberGula-600 transition-colors">Keunggulan</a>
+                    <a href="#menu" class="hover:text-amberGula-600 transition-colors">Menu Favorit</a>
+                    <a href="#testimoni" class="hover:text-amberGula-600 transition-colors">Ulasan</a>
+                    <a href="#lokasi" class="hover:text-amberGula-600 transition-colors">Lokasi</a>
+                </nav>
+
+                <!-- WhatsApp CTA Button -->
+                <div class="hidden md:flex items-center gap-3">
+                    <a href="https://wa.me/6281317262128?text=Halo%20Kopi%20Gula%20Aren%20Amiraw,%20saya%20ingin%20pesan%20menu%20kopi"
+                        target="_blank"
+                        class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-md shadow-emerald-600/20 transition-all transform hover:-translate-y-0.5 animate__animated animate__pulse animate__infinite">
+                        <i data-lucide="message-circle" class="w-4 h-4"></i>
+                        <span>Pesan via WhatsApp</span>
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="flex md:hidden">
+                    <button id="mobile-menu-btn" class="text-slate-700 hover:text-coffee-900 p-2" aria-label="Menu">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu"
+            class="hidden md:hidden border-t border-coffee-100 bg-white px-4 pt-3 pb-6 space-y-3 animate__animated animate__fadeIn">
+            <a href="#tentang" class="block py-2 text-base font-medium text-slate-700 hover:text-amberGula-600">Tentang
+                Kami</a>
+            <a href="#keunggulan"
+                class="block py-2 text-base font-medium text-slate-700 hover:text-amberGula-600">Keunggulan</a>
+            <a href="#menu" class="block py-2 text-base font-medium text-slate-700 hover:text-amberGula-600">Menu
+                Favorit</a>
+            <a href="#testimoni"
+                class="block py-2 text-base font-medium text-slate-700 hover:text-amberGula-600">Ulasan</a>
+            <a href="#lokasi" class="block py-2 text-base font-medium text-slate-700 hover:text-amberGula-600">Lokasi &
+                Kontak</a>
+            <a href="https://wa.me/6281317262128?text=Halo%20Kopi%20Gula%20Aren%20Amiraw,%20saya%20ingin%20pesan%20kopi"
+                target="_blank"
+                class="block w-full text-center bg-emerald-600 text-white py-3 rounded-xl font-semibold shadow-md mt-2">
+                Pesan via WhatsApp
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section
+        class="relative overflow-hidden bg-gradient-to-b from-coffee-950 via-coffee-900 to-coffee-950 py-20 lg:py-28 text-white">
+        <!-- Glow accents -->
+        <div class="absolute -top-12 left-1/4 w-96 h-96 bg-amberGula-500/15 rounded-full blur-3xl pointer-events-none">
+        </div>
+        <div class="absolute bottom-0 right-1/4 w-80 h-80 bg-coffee-600/20 rounded-full blur-3xl pointer-events-none">
+        </div>
+
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-12 gap-12 items-center">
+                <!-- Left Text Content -->
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                    <div
+                        class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amberGula-500/15 border border-amberGula-500/30 text-amberGula-400 text-xs font-semibold uppercase tracking-wider animate__animated animate__fadeInDown">
+                        <i data-lucide="award" class="w-4 h-4"></i>
+                        Sensasi Manis Legit Gula Aren Nusantara
+                    </div>
+
+                    <h1
+                        class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight font-serif-heading animate__animated animate__fadeInLeft">
+                        Kenikmatan Kopi Susu <br class="hidden sm:inline">
+                        <span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-amberGula-400 via-amber-200 to-amberGula-500">Gula
+                            Aren Asli & Creamy</span> <br class="hidden sm:inline">
+                        di Setiap Tegukan.
+                    </h1>
+
+                    <p
+                        class="text-base sm:text-lg text-coffee-200 max-w-2xl mx-auto lg:mx-0 font-normal leading-relaxed animate__animated animate__fadeInLeft animate-delay-1">
+                        Diracik dari perpaduan espresso berkualitas, susu creamy, dan kentalnya gula aren murni tanpa
+                        pemanis buatan. Cita rasa otentik yang pas menemani setiap momen santai maupun produktif Anda.
+                    </p>
+
+                    <div
+                        class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2 animate__animated animate__fadeInUp animate-delay-2">
+                        <a href="https://wa.me/6281317262128?text=Halo%20Kopi%20Gula%20Aren%20Amiraw,%20saya%20mau%20order%20kopi%20sekarang"
+                            target="_blank"
+                            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-7 py-3.5 rounded-xl font-bold text-base transition-all shadow-lg shadow-emerald-950/50 hover:scale-105">
+                            <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                            <span>Pesan Sekarang</span>
+                        </a>
+                        <a href="#menu"
+                            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-coffee-800/80 hover:bg-coffee-700 text-coffee-100 border border-coffee-700 px-7 py-3.5 rounded-xl font-semibold text-base transition-all">
+                            <span>Lihat Pilihan Menu</span>
+                            <i data-lucide="arrow-down" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+
+                    <!-- Highlight Badges -->
+                    <div
+                        class="grid grid-cols-3 gap-4 pt-8 border-t border-coffee-800/80 mt-8 text-center sm:text-left animate__animated animate__fadeInUp animate-delay-3">
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-extrabold text-amberGula-400">100%</p>
+                            <p class="text-xs sm:text-sm text-coffee-300">Aren Organik Murni</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-extrabold text-white">5.0 ?</p>
+                            <p class="text-xs sm:text-sm text-coffee-300">Google Maps Rating</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-extrabold text-amberGula-400">Fresh</p>
+                            <p class="text-xs sm:text-sm text-coffee-300">Made by Order</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Feature Card -->
+                <div class="lg:col-span-5 relative animate__animated animate__fadeInRight animate-delay-1">
+                    <div
+                        class="relative bg-gradient-to-br from-coffee-800 to-coffee-950 p-8 rounded-3xl border border-coffee-700 shadow-2xl space-y-6">
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-amberGula-500/20 text-amberGula-400 flex items-center justify-center mx-auto lg:mx-0 animate__animated animate__bounceIn animate-delay-2">
+                            <i data-lucide="cup-soda" class="w-8 h-8"></i>
+                        </div>
+                        <div class="space-y-2 text-center lg:text-left">
+                            <h3 class="text-2xl font-bold text-white font-serif-heading">Signature Kopi Aren Amiraw</h3>
+                            <p class="text-sm text-coffee-300">
+                                Perpaduan rasa manis gurih gula aren murni, creamy susu segar, dan aroma kopi panggang
+                                khas nusantara.
+                            </p>
+                        </div>
+                        <div
+                            class="p-4 rounded-xl bg-coffee-900/80 border border-coffee-700/60 space-y-2 text-xs text-coffee-200">
+                            <div class="flex items-center justify-between">
+                                <span>Tingkat Kemanisan</span>
+                                <span class="text-amberGula-400 font-semibold">Bisa Disesuaikan</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span>Kemasan</span>
+                                <span class="text-amberGula-400 font-semibold">Cup Segel / Botol 1 Liter</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span>Penyajian</span>
+                                <span class="text-emerald-400 font-semibold">Dingin / Hangat</span>
+                            </div>
+                        </div>
+                        <a href="https://wa.me/6281317262128" target="_blank"
+                            class="block w-full text-center py-3.5 bg-amberGula-500 hover:bg-amberGula-400 text-coffee-950 font-bold rounded-xl text-sm transition transform hover:-translate-y-0.5">
+                            Order Langsung via WA
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Keunggulan Section -->
+    <section id="keunggulan" class="py-20 bg-white border-b border-coffee-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto space-y-3 mb-16">
+                <span class="text-amberGula-600 font-semibold text-xs uppercase tracking-widest">Kenapa Harus
+                    Amiraw?</span>
+                <h2 class="text-3xl font-extrabold text-coffee-950 tracking-tight font-serif-heading">Keaslian Rasa yang
+                    Membedakan Kami</h2>
+                <p class="text-slate-600 text-sm sm:text-base">Dibuat dengan dedikasi untuk menghadirkan kopi susu gula
+                    aren dengan kualitas bahan terbaik.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div
+                    class="p-8 rounded-2xl bg-coffee-50/70 border border-coffee-100 hover:border-amberGula-400 transition-all hover:shadow-xl group hover:-translate-y-1">
+                    <div
+                        class="w-12 h-12 rounded-xl bg-amber-100 text-amberGula-700 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="droplet" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-coffee-950 mb-2">Gula Aren Organik Asli</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Kami hanya menggunakan gula aren murni alami pilihan tanpa campuran sirup sintetis atau gula
+                        buatan. Lebih harum dan nyaman di tenggorokan.
+                    </p>
+                </div>
+
+                <!-- Card 2 -->
+                <div
+                    class="p-8 rounded-2xl bg-coffee-50/70 border border-coffee-100 hover:border-amberGula-400 transition-all hover:shadow-xl group hover:-translate-y-1">
+                    <div
+                        class="w-12 h-12 rounded-xl bg-amber-100 text-amberGula-700 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="coffee" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-coffee-950 mb-2">Biji Kopi Pilihan Segar</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Biji kopi nusantara dengan profil sangrai pas menghasilkan citarasa kopi yang bold, tidak asam
+                        berlebih, dan nikmat berpadu susu.
+                    </p>
+                </div>
+
+                <!-- Card 3 -->
+                <div
+                    class="p-8 rounded-2xl bg-coffee-50/70 border border-coffee-100 hover:border-amberGula-400 transition-all hover:shadow-xl group hover:-translate-y-1">
+                    <div
+                        class="w-12 h-12 rounded-xl bg-amber-100 text-amberGula-700 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="heart-handshake" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-coffee-950 mb-2">Diracik Fresh Setiap Hari</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Setiap cangkir dan botol dibuat langsung saat pesanan masuk (*freshly brewed*) dengan standar
+                        kebersihan terjaga dan kemasan aman.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Showcase Section -->
+    <section id="menu" class="py-20 bg-coffee-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto space-y-3 mb-16">
+                <span class="text-amberGula-600 font-semibold text-xs uppercase tracking-widest">Daftar Menu
+                    Favorit</span>
+                <h2 class="text-3xl font-extrabold text-coffee-950 tracking-tight font-serif-heading">Pilihan Menu Kopi
+                    & Non-Kopi</h2>
+                <p class="text-slate-600 text-sm">Temukan racikan favorit Anda untuk menemani hari santai atau rapat
+                    kerja.</p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Menu Item 1 -->
+                <div
+                    class="bg-white rounded-2xl overflow-hidden shadow-sm border border-coffee-100 hover:shadow-xl transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
+                    <div class="p-6">
+                        <div class="flex items-start justify-between gap-2 mb-3">
+                            <span
+                                class="px-2.5 py-1 bg-amber-100 text-amberGula-700 text-xs font-bold rounded-lg uppercase">Best
+                                Seller</span>
+                            <span class="text-emerald-600 font-extrabold text-xs">Paling Diminati</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-coffee-950 mb-2">Es Kopi Gula Aren Amiraw</h4>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                            Racikan signature espresso, susu fresh creamy, dan manis legit alami dari gula aren murni.
+                        </p>
+                    </div>
+                    <div class="px-6 pb-6 pt-2 border-t border-slate-100 flex items-center justify-between">
+                        <span class="text-xs text-slate-500 font-medium">Ice / Less Sweet Available</span>
+                        <a href="https://wa.me/6281317262128?text=Saya%20ingin%20pesan%20Es%20Kopi%20Gula%20Aren%20Amiraw"
+                            target="_blank"
+                            class="p-2.5 rounded-xl bg-coffee-900 hover:bg-amberGula-600 text-white transition">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Menu Item 2 -->
+                <div
+                    class="bg-white rounded-2xl overflow-hidden shadow-sm border border-coffee-100 hover:shadow-xl transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
+                    <div class="p-6">
+                        <div class="flex items-start justify-between gap-2 mb-3">
+                            <span
+                                class="px-2.5 py-1 bg-amber-100 text-amberGula-700 text-xs font-bold rounded-lg uppercase">Strong
+                                & Bold</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-coffee-950 mb-2">Kopi Aren Double Shot</h4>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                            Ekstra espresso ganda untuk suntikan energi dan fokus maksimal sepanjang hari.
+                        </p>
+                    </div>
+                    <div class="px-6 pb-6 pt-2 border-t border-slate-100 flex items-center justify-between">
+                        <span class="text-xs text-slate-500 font-medium">Extra Kick Kafein</span>
+                        <a href="https://wa.me/6281317262128?text=Saya%20ingin%20pesan%20Kopi%20Aren%20Double%20Shot"
+                            target="_blank"
+                            class="p-2.5 rounded-xl bg-coffee-900 hover:bg-amberGula-600 text-white transition">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Menu Item 3 -->
+                <div
+                    class="bg-white rounded-2xl overflow-hidden shadow-sm border border-coffee-100 hover:shadow-xl transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
+                    <div class="p-6">
+                        <div class="flex items-start justify-between gap-2 mb-3">
+                            <span
+                                class="px-2.5 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-lg uppercase">Aromatic</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-coffee-950 mb-2">Kopi Aren Pandan</h4>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                            Kombinasi kopi susu gula aren dengan ekstraksi aroma daun pandan alami yang harum dan
+                            menenangkan.
+                        </p>
+                    </div>
+                    <div class="px-6 pb-6 pt-2 border-t border-slate-100 flex items-center justify-between">
+                        <span class="text-xs text-slate-500 font-medium">Aroma Segar & Harum</span>
+                        <a href="https://wa.me/6281317262128?text=Saya%20ingin%20pesan%20Kopi%20Aren%20Pandan"
+                            target="_blank"
+                            class="p-2.5 rounded-xl bg-coffee-900 hover:bg-amberGula-600 text-white transition">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Menu Item 4 -->
+                <div
+                    class="bg-white rounded-2xl overflow-hidden shadow-sm border border-coffee-100 hover:shadow-xl transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
+                    <div class="p-6">
+                        <div class="flex items-start justify-between gap-2 mb-3">
+                            <span
+                                class="px-2.5 py-1 bg-sky-100 text-sky-700 text-xs font-bold rounded-lg uppercase">Non-Coffee</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-coffee-950 mb-2">Cokelat Susu Gula Aren</h4>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                            Cokelat premium yang kental berpadu dengan susu murni dan gurihnya gula aren alami.
+                        </p>
+                    </div>
+                    <div class="px-6 pb-6 pt-2 border-t border-slate-100 flex items-center justify-between">
+                        <span class="text-xs text-slate-500 font-medium">Favorit Non-Coffee</span>
+                        <a href="https://wa.me/6281317262128?text=Saya%20ingin%20pesan%20Cokelat%20Susu%20Gula%20Aren"
+                            target="_blank"
+                            class="p-2.5 rounded-xl bg-coffee-900 hover:bg-amberGula-600 text-white transition">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Menu Item 5 -->
+                <div
+                    class="bg-white rounded-2xl overflow-hidden shadow-sm border border-coffee-100 hover:shadow-xl transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
+                    <div class="p-6">
+                        <div class="flex items-start justify-between gap-2 mb-3">
+                            <span
+                                class="px-2.5 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-lg uppercase">Matcha</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-coffee-950 mb-2">Matcha Aren Latte</h4>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                            Teh hijau matcha otentik dipadu gurihnya gula aren dan susu segar yang lembut.
+                        </p>
+                    </div>
+                    <div class="px-6 pb-6 pt-2 border-t border-slate-100 flex items-center justify-between">
+                        <span class="text-xs text-slate-500 font-medium">Creamy & Calming</span>
+                        <a href="https://wa.me/6281317262128?text=Saya%20ingin%20pesan%20Matcha%20Aren%20Latte"
+                            target="_blank"
+                            class="p-2.5 rounded-xl bg-coffee-900 hover:bg-amberGula-600 text-white transition">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Menu Item 6: Botol Literan -->
+                <div
+                    class="bg-white rounded-2xl overflow-hidden shadow-sm border border-coffee-100 hover:shadow-xl transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
+                    <div class="p-6">
+                        <div class="flex items-start justify-between gap-2 mb-3">
+                            <span
+                                class="px-2.5 py-1 bg-amberGula-500 text-white text-xs font-bold rounded-lg uppercase">Kemasan
+                                Botol</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-coffee-950 mb-2">Kopi Aren Amiraw 1 Liter</h4>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                            Kemasan botol 1 liter praktis untuk stok kulkas, acara keluarga, ataupun kantor.
+                        </p>
+                    </div>
+                    <div class="px-6 pb-6 pt-2 border-t border-slate-100 flex items-center justify-between">
+                        <span class="text-xs text-slate-500 font-medium">Bisa untuk 4-5 Gelas</span>
+                        <a href="https://wa.me/6281317262128?text=Saya%20ingin%20pesan%20Kopi%20Aren%20Amiraw%201%20Liter"
+                            target="_blank"
+                            class="p-2.5 rounded-xl bg-coffee-900 hover:bg-amberGula-600 text-white transition">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimoni Pelanggan -->
+    <section id="testimoni" class="py-20 bg-white border-t border-coffee-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto space-y-3 mb-16">
+                <span class="text-amberGula-600 font-semibold text-xs uppercase tracking-widest">Kepuasan
+                    Pelanggan</span>
+                <h2 class="text-3xl font-extrabold text-coffee-950 tracking-tight font-serif-heading">Apa Kata Penikmat
+                    Kopi Amiraw?</h2>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Testi 1 -->
+                <div
+                    class="bg-coffee-50/60 p-8 rounded-2xl border border-coffee-100 flex flex-col justify-between hover:shadow-md transition">
+                    <div class="space-y-4">
+                        <div class="flex text-amberGula-500 gap-1">
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        </div>
+                        <p class="text-sm text-slate-700 italic leading-relaxed">
+                            "Rasa gula arennya beneran kerasa asli dan wangi, beda sama sirup biasa. Kopinya juga pas,
+                            ga bikin deg-degan atau enek. Langganan buat nemenin WFH!"
+                        </p>
+                    </div>
+                    <div class="pt-6 mt-6 border-t border-coffee-200/60">
+                        <p class="text-sm font-bold text-coffee-950">Fajar Nugraha</p>
+                        <p class="text-xs text-slate-500">Pelanggan Setia</p>
+                    </div>
+                </div>
+
+                <!-- Testi 2 -->
+                <div
+                    class="bg-coffee-50/60 p-8 rounded-2xl border border-coffee-100 flex flex-col justify-between hover:shadow-md transition">
+                    <div class="space-y-4">
+                        <div class="flex text-amberGula-500 gap-1">
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        </div>
+                        <p class="text-sm text-slate-700 italic leading-relaxed">
+                            "Pesan botol literan buat acara di rumah, semuanya suka! Manisnya pas, ga bikin seret di
+                            tenggorokan."
+                        </p>
+                    </div>
+                    <div class="pt-6 mt-6 border-t border-coffee-200/60">
+                        <p class="text-sm font-bold text-coffee-950">Siti Rahma</p>
+                        <p class="text-xs text-slate-500">Jakarta Timur</p>
+                    </div>
+                </div>
+
+                <!-- Testi 3 -->
+                <div
+                    class="bg-coffee-50/60 p-8 rounded-2xl border border-coffee-100 flex flex-col justify-between hover:shadow-md transition">
+                    <div class="space-y-4">
+                        <div class="flex text-amberGula-500 gap-1">
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        </div>
+                        <p class="text-sm text-slate-700 italic leading-relaxed">
+                            "Pelayanannya ramah banget lewat WA, pesanan cepat siap. Varian kopi gula aren pandannya
+                            juara sih!"
+                        </p>
+                    </div>
+                    <div class="pt-6 mt-6 border-t border-coffee-200/60">
+                        <p class="text-sm font-bold text-coffee-950">Dimas Pratama</p>
+                        <p class="text-xs text-slate-500">Ciracas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Komposisi Otentik -->
+    <section class="composition-section" style="padding: 40px 20px; font-family: sans-serif; background-color: #fcf9f5;">
+        <div style="max-width: 1000px; margin: 0 auto; text-align: center;">
+            <h2 style="color: #3b2219; font-size: 28px; margin-bottom: 10px;">Perpaduan Komposisi Otentik</h2>
+            <p style="color: #665248; font-size: 16px; margin-bottom: 35px;">Kombinasi seimbang cita rasa premium untuk
+                kenikmatan aroma dan rasa yang khas.</p>
+    
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;">
+    
+                <!-- Biji Kopi Arabica -->
+                <div
+                    style="background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); text-align: center;">
+                    <img src="images/arabica-coffee.jpg" alt="Biji Kopi Arabica Premium"
+                        style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">
+                    <h3 style="color: #3b2219; font-size: 18px; margin: 10px 0 5px;">Kopi Arabica</h3>
+                    <p style="color: #6c635e; font-size: 14px; line-height: 1.4;">Menghadirkan keharuman aromatik yang kaya
+                        serta sentuhan keasaman lembut yang elegan.</p>
+                </div>
+    
+                <!-- Biji Kopi Robusta -->
+                <div
+                    style="background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); text-align: center;">
+                    <img src="images/robusta-coffee.jpg" alt="Biji Kopi Robusta Pilihan"
+                        style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">
+                    <h3 style="color: #3b2219; font-size: 18px; margin: 10px 0 5px;">Kopi Robusta</h3>
+                    <p style="color: #6c635e; font-size: 14px; line-height: 1.4;">Memberikan karakter rasa kuat (*bold
+                        body*) dan sensasi pahit khas yang mantap.</p>
+                </div>
+    
+                <!-- Gula Aren Alami -->
+                <div
+                    style="background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); text-align: center;">
+                    <img src="images/palm-sugar.jpg" alt="Gula Aren Organik"
+                        style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">
+                    <h3 style="color: #3b2219; font-size: 18px; margin: 10px 0 5px;">Gula Aren Murni</h3>
+                    <p style="color: #6c635e; font-size: 14px; line-height: 1.4;">Pemanis alami dengan aroma karamel legit
+                        yang menyatu lembut di lidah.</p>
+                </div>
+    
+                <!-- Kayu Manis Premium -->
+                <div
+                    style="background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); text-align: center;">
+                    <img src="images/cinnamon-sticks.jpg" alt="Kayu Manis Premium"
+                        style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">
+                    <h3 style="color: #3b2219; font-size: 18px; margin: 10px 0 5px;">Kayu Manis Premium</h3>
+                    <p style="color: #6c635e; font-size: 14px; line-height: 1.4;">Sentuhan rempah aromatik hangat yang
+                        memperkaya rasa serta menyegarkan.</p>
+                </div>
+    
+            </div>
+        </div>
+    </section>
+    
+    <section id="lokasi" class="py-20 bg-coffee-100/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-12 gap-12 items-center">
+                <!-- Info Kolom -->
+                <div class="lg:col-span-5 space-y-6">
+                    <span class="text-amberGula-600 font-semibold text-xs uppercase tracking-widest">Kunjungi
+                        Kami</span>
+                    <h2 class="text-3xl font-extrabold text-coffee-950 font-serif-heading">Lokasi & Kontak Pemesanan
+                    </h2>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Kunjungi outlet kami di Ciracas atau pesan langsung secara online untuk pengantaran cepat ke
+                        rumah dan kantor Anda.
+                    </p>
+
+                    <div class="space-y-4 pt-2">
+                        <div class="flex items-start gap-4 p-4 rounded-2xl bg-white border border-coffee-100 shadow-sm">
+                            <div
+                                class="w-10 h-10 rounded-xl bg-amber-100 text-amberGula-700 flex items-center justify-center shrink-0 mt-0.5">
+                                <i data-lucide="map-pin" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-coffee-950">Alamat Lengkap</h4>
+                                <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                                    Gg. Masjid No.68m 5, RT.5/RW.10, Ciracas, Kec. Ciracas, Kota Jakarta Timur, DKI
+                                    Jakarta 13740
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4 p-4 rounded-2xl bg-white border border-coffee-100 shadow-sm">
+                            <div
+                                class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                                <i data-lucide="phone" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-coffee-950">Telepon / WhatsApp</h4>
+                                <p class="text-xs text-slate-600 mt-1">
+                                    +62 813-1726-2128
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4 p-4 rounded-2xl bg-white border border-coffee-100 shadow-sm">
+                            <div
+                                class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center shrink-0 mt-0.5">
+                                <i data-lucide="clock" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-coffee-950">Jam Operasional</h4>
+                                <p class="text-xs text-slate-600 mt-1">
+                                    Minggu: 09.00 – 17.00 WIB <br>
+                                    (Pesanan online via WhatsApp tersedia)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <a href="https://www.google.com/maps/place//data=!4m2!3m1!1s0x2e69ed0a469645e1:0x4ba67c2010cc6909"
+                            target="_blank"
+                            class="inline-flex items-center gap-2 bg-coffee-900 hover:bg-coffee-800 text-white font-bold px-6 py-3.5 rounded-xl text-sm shadow-md transition mr-3">
+                            <i data-lucide="navigation" class="w-4 h-4"></i>
+                            <span>Buka di Google Maps</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Google Maps Embed Container -->
+                <div class="lg:col-span-7">
+                    <div
+                        class="rounded-3xl overflow-hidden shadow-xl border-4 border-white bg-white aspect-video sm:aspect-[4/3] w-full">
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3965.550371039387!2d106.8757761!3d-6.3226331999999985!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69ed0a469645e1%3A0x4ba67c2010cc6909!2sKopi%20Gula%20Aren%20Amiraw!5e0!3m2!1sid!2sid!4v1787125743534!5m2!1sid!2sid"
+                            width="100%" height="100%" style="border:0; min-height: 380px;" allowfullscreen=""
+                            loading="lazy" referrerpolicy="strict-origin-when-cross-origin">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/6281317262128?text=Halo%20Kopi%20Gula%20Aren%20Amiraw,%20saya%20mau%20order" target="_blank"
+        class="fixed bottom-6 right-6 z-50 bg-emerald-600 hover:bg-emerald-500 text-white p-4 rounded-full shadow-2xl flex items-center gap-2 group transition-all transform hover:scale-105 animate__animated animate__bounceInRight"
+        aria-label="Chat WhatsApp">
+        <i data-lucide="message-circle"
+            class="w-6 h-6 animate__animated animate__tada animate__infinite animate__slower"></i>
+        <span
+            class="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-300 font-semibold text-sm">Pesan
+            Sekarang</span>
+    </a>
+
+    <!-- Footer -->
+    <footer class="bg-coffee-950 text-coffee-300 py-12 border-t border-coffee-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-9 h-9 rounded-xl bg-amberGula-500/20 text-amberGula-400 flex items-center justify-center">
+                        <i data-lucide="coffee" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <span class="text-base font-bold text-white font-serif-heading">Kopi Gula Aren <span
+                                class="text-amberGula-400">Amiraw</span></span>
+                        <p class="text-xs text-coffee-400">Ciracas, Jakarta Timur</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-6 text-xs text-coffee-400">
+                    <a href="#tentang" class="hover:text-amberGula-400 transition">Tentang</a>
+                    <a href="#menu" class="hover:text-amberGula-400 transition">Menu</a>
+                    <a href="#lokasi" class="hover:text-amberGula-400 transition">Lokasi & Jam Buka</a>
+                </div>
+                <p class="text-xs text-coffee-500">&copy; 2026 Kopi Gula Aren Amiraw. Seluruh hak cipta dilindungi.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Lucide Icon Trigger & Menu Script -->
+    <script>
+        lucide.createIcons();
+
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+</body>
+
+</html>
