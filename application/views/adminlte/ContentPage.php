@@ -14,8 +14,8 @@
 
                             <select id="filterPage" class="form-control form-control-sm mr-2" style="width:200px;">
                                 <option value="">Semua Page</option>
-                                <?php foreach ($list_page as $row): ?>
-                                    <option value="<?= $row->slug ?>"><?= $row->slug ?></option>
+                                <?php foreach ($list_page as $row):  ?>
+                                    <option value="<?= $row->id_page ?>"><?= $row->slug ?></option>
                                 <?php endforeach; ?>
                             </select>
 
@@ -70,183 +70,145 @@
 
 <script>
     $(document).ready(function() {
-        $('#filterPage').change(function() {
-            tableTransaksi.ajax.reload();
-        });
-        tableTransaksi = $('#myTable').DataTable({
+        // 1. Inisialisasi DataTable Server-Side
+        let tableTransaksi = $('#myTable').DataTable({
             "scrollX": true,
             "processing": true,
             "autoWidth": false,
             "serverSide": true,
-            "searching": false, // Menyembunyikan kotak pencarian bawaan
-            "order": [],
-
-            ajax: {
-                url: "<?= base_url('Dashboard/view_contents'); ?>",
-                type: "POST",
-                data: function(d) {
-
+            "searching": false,
+            "order": [
+                [8, "asc"]
+            ],
+            "ajax": {
+                "url": "<?= base_url('Dashboard/view_contents'); ?>",
+                "type": "POST",
+                "data": function(d) {
                     d.page_id = $('#filterPage').val();
-
                 }
             },
-
             "columns": [{
                     "data": "id",
-                    "render": function(data, type, row, meta) {
-                        return meta.row + meta.settings._iDisplayStart + 1;
-                    }
+                    "render": (data, type, row, meta) => meta.row + meta.settings._iDisplayStart + 1
                 },
                 {
-                    "data": "page_id",
+                    "data": "page_id"
                 },
                 {
-                    "data": "title",
+                    "data": "title"
                 },
                 {
-                    "data": "span",
+                    "data": "span"
                 },
                 {
-                    "data": "subtitle",
+                    "data": "subtitle"
                 },
                 {
-                    "data": "content",
+                    "data": "content"
                 },
                 {
-                    "data": "image",
+                    "data": "image"
                 },
                 {
-                    "data": "section",
+                    "data": "section"
                 },
                 {
-                    "data": "urutan",
+                    "data": "urutan"
                 },
                 {
                     "data": "is_active",
-                    "render": function(data, type, row) {
-                        if (data == 1) {
-                            return '<span class="badge badge-success">Aktif</span>';
-                        } else {
-                            return '<span class="badge badge-danger">Tidak Aktif</span>';
-                        }
-                    }
-                }, {
-                    "data": "aksi",
+                    "render": (data) => (data == 1) ?
+                        '<span class="badge badge-success">Aktif</span>' : '<span class="badge badge-danger">Nonaktif</span>'
                 },
+                {
+                    "data": "aksi"
+                }
             ]
         });
 
-        $('#myTable').on('click', '.btn-update', function(e) {
-            e.preventDefault();
-
-            let id = $(this).data('id');
-
-            $.ajax({
-                url: "<?= base_url('Dashboard/addTambahContent/update/'); ?>" + id,
-                type: "GET",
-
-                beforeSend: function() {
-
-                    $('#modalContent').modal('show');
-
-                    $('#isiModalContent').html(`
-                <div class="modal-body text-center p-5">
-                    <i class="fas fa-spinner fa-spin fa-2x"></i>
-                    <p class="mt-2">Loading...</p>
-                </div>
-            `);
-
-                },
-
-                success: function(response) {
-
-                    $('#isiModalContent').html(response);
-
-                },
-
-                error: function() {
-
-                    $('#isiModalContent').html(`
-                <div class="modal-body text-center text-danger p-4">
-                    <i class="fas fa-exclamation-triangle fa-2x"></i>
-                    <p class="mt-2">Gagal memuat data</p>
-                </div>
-            `);
-
-                }
-
-            });
-
-        });
-        $('#myTable').on('click', '.btn-delete', function(e) {
-            e.preventDefault();
-
-            let id = $(this).data('id');
-
-            $.ajax({
-                url: "<?= base_url('Dashboard/addTambahContent/delete/'); ?>" + id,
-                type: "GET",
-
-                beforeSend: function() {
-
-                    $('#modalContent').modal('show');
-
-                    $('#isiModalContent').html(`
-                <div class="modal-body text-center p-5">
-                    <i class="fas fa-spinner fa-spin fa-2x"></i>
-                    <p class="mt-2">Loading...</p>
-                </div>
-            `);
-
-                },
-
-                success: function(response) {
-
-                    $('#isiModalContent').html(response);
-
-                },
-
-                error: function() {
-
-                    $('#isiModalContent').html(`
-                <div class="modal-body text-center text-danger p-4">
-                    <i class="fas fa-exclamation-triangle fa-2x"></i>
-                    <p class="mt-2">Gagal memuat data</p>
-                </div>
-            `);
-
-                }
-
-            });
-
+        // 2. Filter Page Event
+        $('#filterPage').change(function() {
+            tableTransaksi.ajax.reload();
         });
 
+        // 3. Modal Tambah Section
         $('#btnTambahContent').on('click', function(e) {
             e.preventDefault();
+            $('#modalContent').modal('show');
+            $('#isiModalContent').html('<div class="p-5 text-center"><i class="fas fa-spinner fa-spin fa-2x"></i></div>');
+
+            $.get("<?= base_url('Dashboard/addTambahContent/insert'); ?>", function(res) {
+                $('#isiModalContent').html(res);
+            });
+        });
+
+        // 4. Modal Edit Section
+        $('#myTable').on('click', '.btn-update', function(e) {
+            e.preventDefault();
+            let id = $(this).data('id');
+            $('#modalContent').modal('show');
+            $('#isiModalContent').html('<div class="p-5 text-center"><i class="fas fa-spinner fa-spin fa-2x"></i></div>');
+
+            $.get("<?= base_url('Dashboard/addTambahContent/update/'); ?>" + id, function(res) {
+                $('#isiModalContent').html(res);
+            });
+        });
+
+        // 5. Submit Form AJAX (Insert / Update)
+        $(document).on('submit', '#formContentSection', function(e) {
+            e.preventDefault();
+            let formData = new FormData(this);
+            let btn = $('#btnSaveSubmit');
+
+            btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Menyimpan...');
 
             $.ajax({
-                url: "<?= base_url('Dashboard/addTambahContent/insert'); ?>",
-                type: "GET",
-                beforeSend: function() {
-                    $('#modalContent').modal('show');
-                    $('#isiModalContent').html(`
-                <div class="modal-body text-center p-5">
-                    <i class="fas fa-spinner fa-spin"></i> Loading...
-                </div>
-            `);
-                },
+                url: "<?= base_url('Dashboard/save_content'); ?>",
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: "json",
                 success: function(response) {
-                    $('#isiModalContent').html(response);
+                    btn.prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Simpan Section');
+                    if (response.status === 'success') {
+                        $('#modalContent').modal('hide');
+                        tableTransaksi.ajax.reload(null, false);
+                    } else {
+                        alert(response.message);
+                    }
                 },
                 error: function() {
-                    $('#isiModalContent').html(`
-                <div class="modal-body text-center text-danger">
-                    Gagal memuat data
-                </div>
-            `);
+                    btn.prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Simpan Section');
+                    alert('Terjadi kesalahan server saat menyimpan data.');
                 }
             });
+        });
 
+        // 6. Modal Hapus Section
+        $('#myTable').on('click', '.btn-delete', function(e) {
+            e.preventDefault();
+            let id = $(this).data('id');
+            $('#modalContent').modal('show');
+            $('#isiModalContent').html('<div class="p-5 text-center"><i class="fas fa-spinner fa-spin fa-2x"></i></div>');
+
+            $.get("<?= base_url('Dashboard/addTambahContent/delete/'); ?>" + id, function(res) {
+                $('#isiModalContent').html(res);
+            });
+        });
+
+        // 7. Eksekusi Hapus AJAX
+        $(document).on('click', '#btnConfirmDelete', function(e) {
+            e.preventDefault();
+            let id = $(this).data('id');
+            let btn = $(this);
+
+            btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Menghapus...');
+
+            $.getJSON("<?= base_url('Dashboard/execute_delete/'); ?>" + id, function(res) {
+                $('#modalContent').modal('hide');
+                tableTransaksi.ajax.reload(null, false);
+            });
         });
     });
 </script>

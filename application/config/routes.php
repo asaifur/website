@@ -82,3 +82,12 @@ $route['website/(:any)'] = 'website/index/$1';
 
 // Opsional: jika pengguna mengakses /website saja tanpa slug
 $route['website'] = 'website/index';
+
+// Routing halaman utama blog
+$route['blog'] = 'blog/index';
+
+// Routing pagination blog (contoh: /blog/index/6)
+$route['blog/index/(:num)'] = 'blog/index/$1';
+
+// Routing detail artikel (contoh: /blog/cara-instalasi-ducting)
+$route['blog/(:any)'] = 'blog/read/$1';

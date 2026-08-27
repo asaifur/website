@@ -66,6 +66,22 @@ class Menu_model extends CI_Model
         $query = $this->db->get();
         return $query;
     }
+
+    public function count_data_pages($table, $where)
+    {
+        $this->db->where($where);
+        return $this->db->count_all_results($table);
+    }
+
+    public function fetch_data_pages_with_limit_offset($table, $where, $limit, $offset, $order = 'DESC')
+    {
+        $this->db->where($where);
+        $this->db->order_by('created_at', $order);
+        $this->db->limit($limit, $offset);
+        return $this->db->get($table);
+    }
+
+
     public function  fetch_data_by_limit_order($table, $where = null)
     {
         $this->db->select('*');

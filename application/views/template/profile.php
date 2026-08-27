@@ -1,3 +1,9 @@
+<?php
+// Memanggil fungsi get_color secara langsung
+$primary_color = get_color('primary');
+$navy_color    = get_color('navy');
+?>
+
 <form id="formupdateprofile" enctype="multipart/form-data">
 
     <div class="row">
@@ -16,7 +22,7 @@
                 <div class="<?= $row->lebar ?> mb-3">
                     <label><?= $row->name ?></label>
                     <input type="text" class="form-control" name="<?= $val ?>"
-                        value="<?= $value ?>" <?= ($row->r == 1) ? "readonly" : "" ?>>
+                        value="<?= htmlspecialchars($value, ENT_QUOTES, 'UTF-8') ?>" <?= ($row->r == 1) ? "readonly" : "" ?>>
                 </div>
             <?php endif; ?>
 
@@ -25,6 +31,26 @@
                     <label><?= $row->name ?></label>
                     <textarea class="form-control" name="<?= $val ?>"><?= $value ?></textarea>
                 </div>
+            <?php endif; ?>
+            <?php if ($row->type == "WARNA"): ?>
+                <!-- Tambahan Input Manual untuk Warna Kustom Website -->
+                <div class="row mt-4 pt-3 border-top">
+                    <div class="col-md-12 mb-2">
+                        <h5 class="text-secondary font-weight-bold">Pengaturan Warna Tema Website</h5>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>Warna <?= $row->name; ?></label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="<?= $row->code ?>" value="<?= $domain[$row->code] ?? '#b91c1c'; ?>">
+                            <span class="input-group-append">
+                                <input type="color" class="form-control h-100" style="width: 50px; padding: 0 5px;" value="<?= $domain[$row->code] ?? '#b91c1c'; ?>" oninput="this.form.<?= $row->code ?>.value=this.value">
+                            </span>
+                        </div>
+                        <small class="text-muted">Contoh: #b91c1c (Merah Industri)</small>
+                    </div>
+                </div>
+
             <?php endif; ?>
             <?php if ($row->type == "HIDDEN"): ?>
                 <input type="hidden" name="<?= $val ?>" value="<?= $value; ?>">
@@ -104,8 +130,11 @@
     </div>
 
 </form>
-<?php $this->load->view('template/scriptes'); ?><script>
+
+<?php $this->load->view('template/scriptes'); ?>
+<script>
     $(document).ready(function() {
+
         $('.custom-file-input').on('change', function() {
             let fileName = $(this).val().split('\\').pop();
             $(this).next('.custom-file-label').addClass("selected").html(fileName);
@@ -128,7 +157,7 @@
                 dataType: "json",
 
                 beforeSend: function() {
-                    $('#formTambahPages button[type="submit"]').prop('disabled', true);
+                    $('#formupdateprofile button[type="submit"]').prop('disabled', true);
                     Swal.fire({
                         title: 'Menyimpan Data...',
                         text: 'Mohon tunggu',
@@ -137,15 +166,13 @@
                             Swal.showLoading()
                         }
                     });
-
                 },
 
                 success: function(response) {
-
                     Swal.close();
 
                     if (response.status == 'success') {
-                        $('#formTambahPages button[type="submit"]').prop('disabled', false);
+                        $('#formupdateprofile button[type="submit"]').prop('disabled', false);
                         Swal.fire({
                             icon: 'success',
                             title: 'Berhasil!',
@@ -154,36 +181,29 @@
                             showConfirmButton: false
                         });
 
-                        $('#modalContent').modal('hide');
-
                         if ($.fn.DataTable.isDataTable('#myTable')) {
                             $('#myTable').DataTable().ajax.reload(null, false);
                         }
 
                     } else {
-
+                        $('#formupdateprofile button[type="submit"]').prop('disabled', false);
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal!',
                             text: response.message
                         });
-
                     }
-
                 },
 
                 error: function(xhr) {
-
                     Swal.close();
-
+                    $('#formupdateprofile button[type="submit"]').prop('disabled', false);
                     Swal.fire({
                         icon: 'error',
                         title: 'Server Error',
                         text: 'Terjadi kesalahan pada server'
                     });
-
                     console.log(xhr.responseText);
-
                 }
 
             });

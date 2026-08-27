@@ -48,9 +48,13 @@ $robots = ($status == 404) ? 'noindex,follow' : ($domain->robots_index ?? 'index
     <?php endif; ?>
 
     <!-- Favicon -->
-    <?php $favicon_img = !empty($domain->favicon) ? $domain->favicon : (!empty($domain->logo) ? $domain->logo : 'default.png'); ?>
+    <!-- Favicon -->
+    <?php
+    $favicon_img = !empty($pages->images_pages)
+        ? $pages->images_pages
+        : (!empty($domain->favicon) ? $domain->favicon : (!empty($domain->logo) ? $domain->logo : 'default.png'));
+    ?>
     <link rel="icon" type="image/png" href="<?= base_url('assets/uploads/img/' . $favicon_img); ?>">
-
     <!-- Google Verification -->
     <?php if (!empty($domain->meta_google_site_verification)) : ?>
         <meta name="google-site-verification" content="<?= $domain->meta_google_site_verification; ?>">

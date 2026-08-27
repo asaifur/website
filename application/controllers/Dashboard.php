@@ -444,11 +444,171 @@ class Dashboard extends MY_Controller
         }
         $data['domain']      = $domain;
         $data['title'] = " Content Page";
+        $data['list_page'] = $this->db->select('slug,id_page')
+            ->where('id_domain', $domain['id'])
+            ->get('table_pages')
+            ->result();
         $this->templates->load('adminlte/ContentPage', $data);
     }
     public function view_contents()
     {
-        echo $this->Page_model->view_contents();
+        $host = $_SERVER['HTTP_HOST'];
+        $domain = $this->db->where('url_domain', $host)->get('table_domain')->row_array();
+        $page_id = $this->input->post('page_id');
+
+        $this->db->where('id_domain', $domain['id']);
+        if (!empty($page_id)) {
+            $this->db->where('page_id', $page_id);
+        }
+        $totalData = $this->db->count_all_results('table_contents_pages', FALSE);
+        $limit  = $this->input->post('length');
+        $start  = $this->input->post('start');
+        $order_col = $this->input->post('order')[0]['column'] ?? 8;
+        $order_dir = $this->input->post('order')[0]['dir'] ?? 'ASC';
+
+        $columns = [
+            0 => 'id',
+            1 => 'page_id',
+            2 => 'title',
+            3 => 'title',
+            4 => 'subtitle',
+            5 => 'content',
+            6 => 'media',
+            7 => 'section',
+            8 => 'urutan',
+            9 => 'is_active'
+        ];
+
+        $this->db->order_by($columns[$order_col] ?? 'urutan', $order_dir);
+        if ($limit != -1) {
+            $this->db->limit($limit, $start);
+        }
+
+        $list = $this->db->get()->result();
+        $data = [];
+
+        foreach ($list as $row) {
+            $aksi = '
+                <div class="btn-group btn-group-sm">
+                    <button class="btn btn-warning btn-update" data-id="' . $row->id . '" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-danger btn-delete" data-id="' . $row->id . '" title="Hapus">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            ';
+
+            $imgPreview = !empty($row->image)
+                ? '<img src="' . $row->image . '" class="img-thumbnail" width="50">'
+                : '<span class="text-muted">-</span>';
+
+            $data[] = [
+                'id'           => $row->id,
+                'page_id'      => '<code>' . $row->page_id . '</code>',
+                'title'        => $row->title ?? '-',
+                'span'         => '<span class="badge badge-info">' . $row->section_id_dom . '</span>',
+                'subtitle'     => character_limiter($row->subtitle, 25),
+                'content'      => character_limiter(strip_tags($row->content), 35),
+                'image'        => $imgPreview,
+                'section'      => '<span class="badge badge-primary font-weight-bold">' . $row->section . '</span>',
+                'urutan'       => $row->urutan,
+                'is_active'    => $row->is_active,
+                'aksi'         => $aksi
+            ];
+        }
+        echo json_encode([
+            "draw"            => intval($this->input->post('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalData),
+            "data"            => $data
+        ]);
+    }
+
+    // 3. Modal Form Dispatcher (Insert, Update, Delete View)
+    public function addTambahContent($action, $id = null)
+    {
+        $host = $_SERVER['HTTP_HOST'];
+        $domain = $this->db->where('url_domain', $host)->get('table_domain')->row_array();
+        $data['domain'] = $domain;
+
+        if ($action == 'insert') {
+            $data['row'] = null;
+            $data['sections'] = $this->db->select('section')->get('table_sections')->result();
+
+            $data['pages'] = $this->db->where('id_domain', $domain['id'])->get('table_pages')->result();
+            $this->load->view('adminlte/modals/modal_content_form', $data);
+        } elseif ($action == 'update') {
+            $data['row'] = $this->db->where('id', $id)->where('id_domain', $domain['id'])->get('table_contents_pages')->row();
+            $data['sections'] = $this->db->select('section')->get('table_sections')->result();
+            $data['pages'] = $this->db->where('id_domain', $domain['id'])->get('table_pages')->result();
+            $this->load->view('adminlte/modals/modal_content_form', $data);
+        } elseif ($action == 'delete') {
+            $data['row'] = $this->db->where('id', $id)->where('id_domain', $domain['id'])->get('table_contents_pages')->row();
+            $this->load->view('adminlte/modals/modal_content_delete', $data);
+        }
+    }
+
+    // 4. Proses Simpan / Update (AJAX Form Submit)
+    public function save_content()
+    {
+        $id        = $this->input->post('id');
+        $id_domain = $this->input->post('id_domain');
+
+        $page = $this->Menu_model->fetch_data('table_pages', ['slug' => $this->input->post('page_slug'), 'id_domain' => $id_domain])->row();
+        $data_save = [
+            'id_domain'      => $id_domain,
+            'page_slug'      => $this->input->post('page_slug'),
+            'page_id'        => $page->id_page,
+            'section'   => $this->input->post('section'),
+            'section_id_dom' => $this->input->post('page_slug'),
+            'title'          => $this->input->post('title'),
+            'subtitle'       => $this->input->post('subtitle'),
+            'content'        => $this->input->post('content'),
+            'urutan'        => $this->input->post('urutan'),
+            'btn_text'       => $this->input->post('btn_text'),
+            'btn_url'        => $this->input->post('btn_url'),
+            'data_payload'   => $this->input->post('data_payload'),
+            'urutan' => $this->input->post('urutan') ?? 1,
+            'is_active'      => $this->input->post('is_active') ?? 1
+        ];
+
+        // Handle Image Upload
+        if (!empty($_FILES['image']['name'])) {
+            $config['upload_path']   = './assets/uploads/img/';
+            $config['allowed_types'] = 'jpg|jpeg|png|webp|svg';
+            $config['file_name']     = 'sec_' . time() . '_' . uniqid();
+            $this->load->library('upload', $config);
+
+            if ($this->upload->do_upload('image')) {
+                $uploadData = $this->upload->data();
+                $data_save['image'] = $uploadData['file_name'];
+            }
+        }
+
+        if (empty($id)) {
+            $this->db->insert('table_contents_pages', $data_save);
+            $msg = 'Content Section berhasil ditambahkan';
+        } else {
+            $this->db->where('id', $id)->where('id_domain', $id_domain)->update('table_contents_pages', $data_save);
+            $msg = 'Content Section berhasil diperbarui';
+        }
+
+        echo json_encode(['status' => 'success', 'message' => $msg]);
+    }
+
+    // 5. Proses Delete Action
+    public function execute_delete($id)
+    {
+        $host = $_SERVER['HTTP_HOST'];
+        $domain = $this->db->where('url_domain', $host)->get('table_domain')->row_array();
+
+        if ($domain && !empty($id)) {
+            $this->db->where('id', $id)->where('id_domain', $domain['id'])->delete('table_contents_pages');
+            echo json_encode(['status' => 'success', 'message' => 'Data section berhasil dihapus']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal menghapus data']);
+        }
     }
 
     public function get_image()
@@ -489,7 +649,7 @@ class Dashboard extends MY_Controller
         $data['get_menu'] = $this->Menu_model->fetch_data('table_pages', ['id_domain' => $this->domain->id])->result();
         $this->load->view('adminlte/addContentCarousel', $data);
     }
-    public function addTambahContent($action, $id = null)
+    public function addTambahContent3($action, $id = null)
     {
         $data['action'] = $action;
         $data['format'] = $this->Menu_model->format_action('format_content_pages', $action)->result();

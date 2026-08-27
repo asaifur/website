@@ -86,3 +86,60 @@ function akses_rol()
 		]
 	];
 }
+
+if (!function_exists('check_data_or_404')) {
+	/**
+	 * Memeriksa apakah data ada, jika tidak maka lempar halaman 404
+	 * 
+	 * @param mixed $data
+	 * @return mixed
+	 */
+	function check_data_or_404($data)
+	{
+		if (empty($data)) {
+			// Jika menggunakan CodeIgniter
+			if (function_exists('show_404')) {
+				show_404();
+			} else {
+				// Fallback jika PHP murni
+				header("HTTP/1.0 404 Not Found");
+				include('errors/html/error_404.php'); // Sesuaikan path file 404 Anda
+				exit;
+			}
+		}
+		return $data;
+	}
+}
+
+
+
+if (!function_exists('get_color')) {
+	/**
+	 * Mengambil warna kustom tema domain dari database
+	 * 
+	 * @param string $type Tipe warna ('primary' atau 'navy')
+	 * @return string Kode Hex Warna
+	 */
+	function get_color($type = 'primary')
+	{
+		$CI = &get_instance();
+
+		// Ambil host domain yang sedang diakses saat ini
+		$raw_host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+		$host = parse_url('http://' . $raw_host, PHP_URL_HOST);
+
+		// Ambil data domain dari database
+		$domain = $CI->db->get_where('table_domain', ['url_domain' => $host])->row();
+
+		if ($domain) {
+			if ($type == 'primary') {
+				return !empty($domain->primary_color) ? $domain->primary_color : '#b91c1c';
+			} elseif ($type == 'navy') {
+				return !empty($domain->navy_color) ? $domain->navy_color : '#0f172a';
+			}
+		}
+
+		// Fallback default jika domain tidak ditemukan di database
+		return ($type == 'primary') ? '#b91c1c' : '#0f172a';
+	}
+}

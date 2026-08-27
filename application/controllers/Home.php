@@ -118,6 +118,29 @@ class Home extends MY_Controller
     }
 
 
+    public function detail($slug = null)
+    {
+        // Validasi awal jika slug/URL kosong
+        if (empty($slug)) {
+            show_404(); // Memanggil fungsi bawaan 404 Not Found
+        }
+
+        // Ambil data dari database berdasarkan slug/url
+        // Contoh menggunakan model table_contents_pages
+        $article = $this->db->get_where('table_contents_pages', ['page_id' => $slug, 'is_active' => 1])->row();
+
+        // Jika data tidak ditemukan di database, tampilkan 404
+        if (!$article) {
+            show_404();
+        }
+
+        $data['section'] = $article;
+
+        // Load view halaman detail
+        // $this->load->view('detail_article', $data);
+    }
+
+
     public function ajax_list()
     {
         $page     = $this->input->get('page');
