@@ -55,7 +55,7 @@ $btn_url  = !empty($section->btn_url) ? $section->btn_url : base_url('blog');
                     // Fallback gambar jika tidak ada featured image
                     $img_src = !empty($news->image_features)
                         ? base_url('assets/uploads/img/' . $news->image_features)
-                        : 'https://images.unsplash.com/photo-1590725140246-20acceedc18b?q=80&w=600&auto=format&fit=crop';
+                        : 'https://kitchentools.id/uploads/img/6d14fb972f20e77e66b815af9056044e.jpg';
 
                     // Format Tanggal (misal: 25 Aug 2026)
                     $tgl_post = !empty($news->created_at) ? date('d M Y', strtotime($news->created_at)) : date('d M Y');
