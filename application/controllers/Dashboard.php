@@ -854,6 +854,134 @@ class Dashboard extends MY_Controller
         }
     }
 
+    private function _get_current_domain()
+    {
+        $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
+
+        // Hapus port jika ada (misal: localhost:8080 menjadi localhost)
+        if (strpos($host, ':') !== false) {
+            $host = explode(':', $host)[0];
+        }
+
+        return $host;
+    }
+
+    // Tambahan logika Controller untuk menangani upload file foto profil
+    public function update_profile_user()
+    {
+        if (!$this->input->is_ajax_request()) {
+            show_404();
+        }
+
+        $user_id = $this->session->userdata('id');
+        $user = $this->db->get_where('users', ['id_users' => $user_id])->row_array();
+
+        $password = $this->input->post('password', true);
+        $institusi = $this->input->post('institusi', true);
+        $bidang_ilmu = $this->input->post('bidang_ilmu', true);
+
+        $data_update = [];
+        if (!empty($password)) {
+            $data_update['password'] = password_hash($password, PASSWORD_DEFAULT);
+        }
+
+        if (!empty($institusi)) {
+            $data_update['institusi'] = $institusi;
+        }
+
+        if (!empty($bidang_ilmu)) {
+            $data_update['bidang_ilmu'] = $bidang_ilmu;
+        }
+
+        // Konfigurasi Library Upload CodeIgniter
+        if (!empty($_FILES['profile_image']['name'])) {
+            $config['upload_path']   = './assets/uploads/img/';
+            $config['allowed_types'] = 'jpg|jpeg|png';
+            $config['max_size']      = 2048; // 2MB
+            $config['encrypt_name']  = TRUE;
+
+            $this->load->library('upload', $config);
+            $this->upload->initialize($config);
+
+            if ($this->upload->do_upload('profile_image')) {
+                $upload_data = $this->upload->data();
+                $new_image = $upload_data['file_name'];
+
+                // Hapus file fisik foto lama jika ada dan bukan gambar default
+                if (!empty($user['image']) && $user['image'] != 'user4-128x128.jpg') {
+                    $old_image_path = './assets/uploads/img/' . $user['image'];
+                    if (file_exists($old_image_path)) {
+                        unlink($old_image_path);
+                    }
+                }
+
+                // Set nama file baru ke array update
+                $data_update['image'] = $new_image;
+            } else {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => $this->upload->display_errors('', '')
+                ]);
+                return;
+            }
+        } else {
+            // Jika tidak ada file baru yang diunggah tetapi ingin menghapus/mengosongkan foto lama (opsional jika flag tertentu dikirim)
+            $remove_image = $this->input->post('remove_image', true);
+            if ($remove_image == 1) {
+                if (!empty($user['image']) && $user['image'] != 'user4-128x128.jpg') {
+                    $old_image_path = './assets/uploads/img/' . $user['image'];
+                    if (file_exists($old_image_path)) {
+                        unlink($old_image_path);
+                    }
+                }
+                // Set field image di database menjadi null atau kosong
+                $data_update['image'] = null;
+            }
+        }
+        if (!empty($data_update)) {
+            $this->db->where('id_users', $user_id)->update('users', $data_update);
+        }
+
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Profil berhasil diperbarui!'
+        ]);
+    }
+
+    public function profileUser()
+    {
+        // Cek apakah user sudah login berdasarkan session
+        if (!$this->session->userdata('logged_in') && !$this->session->userdata('id')) {
+            redirect('admin');
+            return;
+        }
+
+        $host = $this->_get_current_domain();
+
+        // Ambil data domain aktif
+        $domain = $this->db->get_where('table_domain', [
+            'domain_name' => $host,
+            'is_active'   => 1
+        ])->row_array();
+
+        $user_id = $this->session->userdata('id');
+
+        // Ambil data user dari database
+        $user = $this->db->get_where('users', ['id_users' => $user_id])->row_array();
+        if (!$user) {
+            show_404();
+            return;
+        }
+
+        $data['domain'] = $domain;
+        $data['user']   = $user;
+        $data['title']  = "User Profile";
+        $data['action'] = "update";
+
+        // Memuat template tampilan profil user (sesuaikan dengan struktur template Anda)
+        $this->templates->load('template/profile_user', $data);
+    }
+
     public function profile()
     {
         $host = $_SERVER['HTTP_HOST'];
@@ -1287,5 +1415,20 @@ class Dashboard extends MY_Controller
         $this->db->where('id', $id)->delete('table_website');
         $this->session->set_flashdata('success', 'Data berhasil dihapus');
         redirect($_SERVER['HTTP_REFERER'] ?? 'website');
+    }
+
+    // Tambahan Method Controller di Dashboard.php untuk Export PDF Kartu Anggota
+    public function download_kta_pdf()
+    {
+        $user_id = $this->session->userdata('id');
+        $data['user'] = $this->db->get_where('users', ['id_users' => $user_id])->row_array();
+
+        if (!$data['user']) {
+            show_404();
+        }
+
+        // Load library Dompdf atau cetak view khusus PDF
+        // Contoh menggunakan view HTML khusus cetak KTA
+        $this->load->view('template/kta_pdf_view', $data);
     }
 }

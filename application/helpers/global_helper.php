@@ -143,3 +143,33 @@ if (!function_exists('get_color')) {
 		return ($type == 'primary') ? '#b91c1c' : '#0f172a';
 	}
 }
+
+if (!function_exists('generate_member_barcode')) {
+	/**
+	 * Membuat string barcode atau representasi visual kode batang
+	 * Berdasarkan format: date_created (YYYYMMDD) + '000' + id_users
+	 * 
+	 * @param string $created_at Tanggal pembuatan akun (contoh: Y-m-d H:i:s)
+	 * @param int|string $user_id ID user
+	 * @return string
+	 */
+	function generate_member_barcode($created_at, $user_id)
+	{
+		$date_part = date('Ymd', strtotime($created_at));
+		$formatted_string = $date_part . '000' . $user_id;
+
+		// Mengubah string angka menjadi representasi garis barcode vertikal sederhana (simulasi visual barcode)
+		// Atau Anda dapat menyesuaikannya dengan library barcode generator seperti CodeIgniter Bacode Library
+		$barcode_html = '';
+		$chars = str_split($formatted_string);
+
+		foreach ($chars as $char) {
+			// Memberikan variasi ketebalan garis berdasarkan digit angka
+			$width = (intval($char) % 2 == 0) ? '2px' : '1px';
+			$margin = (intval($char) % 3 == 0) ? '2px' : '1px';
+			$barcode_html .= '<span style="display:inline-block; width:' . $width . '; height:30px; background:#000; margin-right:' . $margin . ';"></span>';
+		}
+
+		return '<div style="text-align:center; font-family:monospace; letter-spacing:1px;">' . $barcode_html . '<div style="font-size:10px; font-weight:bold; margin-top:2px;">* ' . $formatted_string . ' *</div></div>';
+	}
+}

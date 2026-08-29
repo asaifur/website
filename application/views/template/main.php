@@ -1,13 +1,18 @@
 <?php $this->load->view('template/header'); ?>
 <style>
+    :root {
+        --primary-color: <?= !empty($domain['primary_color']) ? $domain['primary_color'] : '#6367FF'; ?>;
+        --navy-color: <?= !empty($domain['navy_color']) ? $domain['navy_color'] : '#1e1e2f'; ?>;
+    }
+
     /* Sidebar background */
     .main-sidebar {
-        background-color: #6367FF !important;
+        background-color: var(--primary-color) !important;
     }
 
     /* Brand logo */
     .main-sidebar .brand-link {
-        background-color: #6367FF !important;
+        background-color: var(--primary-color) !important;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
@@ -24,7 +29,7 @@
 
     /* Active menu */
     .nav-sidebar .nav-link.active {
-        background-color: rgba(0, 0, 0, 0.2) !important;
+        background-color: var(--navy-color) !important;
         color: #fff !important;
     }
 </style>
@@ -40,7 +45,6 @@
                 <li class="nav-item">
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
-
             </ul>
 
             <!--begin::End Navbar Links-->
@@ -61,7 +65,7 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                         <!--begin::User Image-->
-                        <li class="user-header text-bg-primary">
+                        <li class="user-header text-bg-primary" style="background-color: var(--primary-color) !important;">
                             <p>
                                 <?= $_SESSION['username'] ?>
                             </p>
@@ -117,7 +121,7 @@
     <footer class="main-footer">
         <strong>
             Copyright &copy; <?= date('Y') ?>&nbsp;
-            <a href="https://wa.link/38cm8i" class="text-decoration-none">HTP Sinergi</a>.
+            <a href="https://wa.me/6285283782281" class="text-decoration-none">optima digital solution</a>.
         </strong>
         All rights reserved.
         <!--end::Copyright-->

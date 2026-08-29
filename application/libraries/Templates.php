@@ -18,11 +18,18 @@ class Templates
 
         // Ambil role dari session
         $userdata = $this->ci->session->userdata();
+        $admin = $userdata['is_admin'];
         $this->ci->load->model('User_model');
         $role_id = $userdata['role'];
-        $menus = $this->ci->User_model->getMenuByRole($role_id);
+        $data['modul'] = $this->ci->User_model->fetch_data_by_modul('user_menu', 'modul');
+        $menus = $this->ci->User_model->getMenu($admin, $role_id);
+        $groupedMenus = [];
+
+        foreach ($menus as $m) {
+            $groupedMenus[$m->modul][] = $m;
+        }
+        $data['menus'] = $groupedMenus;
         $data['contents'] = $this->ci->load->view($view, $data, TRUE);
-        $data['menus'] = $menus;
         return $this->ci->load->view('template/main', $data);
     }
 }

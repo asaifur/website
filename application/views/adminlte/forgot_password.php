@@ -3,58 +3,104 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Forgot Password - HTPSINERGI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?= $domain['meta_title'] ?> - Forgot Password</title>
 
-    <link rel="stylesheet" href="<?= base_url('assets/assets/'); ?>css/adminlte.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="<?= base_url('assets/'); ?>plugins/fontawesome-free/css/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="<?= base_url('assets/dist/'); ?>css/adminlte.min.css">
+    <style>
+        body.login-page {
+            background-image: url('<?= base_url('assets/img/') ?>bc.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+        }
+
+        .login-box .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+    </style>
 </head>
 
 <body class="hold-transition login-page">
     <div class="login-box">
         <div class="card card-outline card-primary">
             <div class="card-header text-center">
-                <b>Forgot</b> Password
+                <h2><?= $domain['meta_title'] ?></h2>
             </div>
             <div class="card-body">
-                <p class="login-box-msg">Masukkan email terdaftar untuk reset password</p>
+                <p class="login-box-msg">You forgot your password? Here you can easily retrieve a new password.</p>
 
-                <form id="forgotForm">
+                <form id="forgotPasswordForm">
                     <div class="input-group mb-3">
                         <input type="email" class="form-control" name="email" placeholder="Email" required>
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-envelope"></span>
+                            </div>
+                        </div>
                     </div>
-
-                    <button type="submit" class="btn btn-primary btn-block">Kirim OTP</button>
+                    <div class="row">
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-block">Request new password</button>
+                        </div>
+                    </div>
                 </form>
+
+                <p class="mt-3 mb-1 text-center">
+                    <a href="<?= base_url('admin'); ?>">Login</a>
+                </p>
             </div>
         </div>
     </div>
+
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Bootstrap 4 -->
-    <script src="<?= base_url('assets/assets/'); ?>plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="<?= base_url('assets/plugins'); ?>/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE App -->
-    <script src="<?= base_url('assets/assets/'); ?>js/adminlte.min.js"></script>
+    <script src="<?= base_url('assets/dist/'); ?>js/adminlte.min.js"></script>
     <script>
-        $('#forgotForm').submit(function(e) {
-            e.preventDefault();
+        $(document).ready(function() {
+            $('#forgotPasswordForm').on('submit', function(e) {
+                e.preventDefault();
 
-            $.ajax({
-                url: "<?= base_url('auth/send_otp'); ?>",
-                type: "POST",
-                data: $(this).serialize(),
-                dataType: "JSON",
-                success: function(res) {
-                    if (res.status == 'success') {
-                        Swal.fire('Berhasil', res.message, 'success').then(() => {
-                            window.location.href = "<?= base_url('auth/verify_otp'); ?>";
-                        });
-                    } else {
-                        Swal.fire('Gagal', res.message, 'error');
+                $.ajax({
+                    url: "<?= base_url('admin/forgot_password'); ?>",
+                    type: "POST",
+                    data: $(this).serialize(),
+                    dataType: "JSON",
+                    success: function(response) {
+                        if (response.status == 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: response.message,
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                window.location.href = response.redirect;
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: response.message
+                            });
+                        }
                     }
-                }
-            })
-        })
+                });
+            });
+        });
     </script>
 </body>
 

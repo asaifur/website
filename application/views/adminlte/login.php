@@ -71,10 +71,10 @@
             </div>
             <!-- /.card-body -->
             <div class="card-footer">
-                <div class="col-8">
+                <div class="d-flex justify-content-between">
                     <a href="<?= base_url('admin/forgot_password'); ?>">Forgot password?</a>
+                    <a href="<?= base_url('admin/register'); ?>" class="text-right">Register a new account</a>
                 </div>
-
             </div>
             <!-- /.card -->
         </div>

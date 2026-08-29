@@ -24,7 +24,15 @@ class Template2
         $this->ci->load->model('User_model');
 
         // Baris 22: Sekarang aman karena $data sudah pasti array
-        $data['menus'] = $this->ci->User_model->getMenuByRole($role_id);
+
+        $data['modul'] = $this->ci->User_model->fetch_data_by_modul('user_menu', 'modul');
+        $menus = $this->ci->User_model->getMenu($admin, $role_id);
+        $groupedMenus = [];
+
+        foreach ($menus as $m) {
+            $groupedMenus[$m->modul][] = $m;
+        }
+        $data['menus'] = $groupedMenus;
 
         // Load konten utama ke dalam variabel 'contents'
         $data['contents'] = $this->ci->load->view($view, $data, TRUE);
