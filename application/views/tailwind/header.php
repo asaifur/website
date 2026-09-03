@@ -69,10 +69,10 @@ if (!empty($page->image_features)) {
     <?php if (!empty($domain->geo_position)) : ?>
         <meta name="geo.position" content="<?= $domain->geo_position; ?>">
     <?php endif; ?>
-
+    <meta name="ICBM" content="<?= !empty($domain->geo_icbm) ? $domain->geo_icbm : (!empty($domain->geo_icbm) ? $domain->geo_icbm : '-6.4025, 106.8186'); ?>">
     <?php
     $primary_color = function_exists('get_color') ? get_color('primary') : (!empty($domain->primary_color) ? $domain->primary_color : '#b91c1c');
-    $navy_color    = function_exists('get_color') ? get_color('navy') : (!empty($domain->navy_color) ? $domain->navy_color : '#0f172a');
+    $navy_color = function_exists('get_color') ? get_color('navy') : (!empty($domain->navy_color) ? $domain->navy_color : '#0f172a');
     ?>
 
     <!-- Favicon -->
@@ -166,4 +166,5 @@ if (!empty($page->image_features)) {
 
     <?= !empty($domain->link_google_tag) ? $domain->link_google_tag : ''; ?>
     <?= !empty($domain->link_google_analytics) ? $domain->link_google_analytics : ''; ?>
+    <?= !empty($domain->link_event_snippet) ? $domain->link_event_snippet : ''; ?>
 </head>

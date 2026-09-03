@@ -112,7 +112,50 @@ $anim_text = $payload['animate_text'] ?? 'animate__fadeInRight';
                 <?php endif; ?>
 
             </div>
+            <!-- Kondisi Tambahan: Menampilkan Struktur Organisasi / Dewan Pengurus -->
+            <?php if (!empty($payload['structure_groups']) && is_array($payload['structure_groups'])): ?>
+                <div class="space-y-6 pt-4 border-t border-slate-200 mt-6">
+                    <?php foreach ($payload['structure_groups'] as $group): ?>
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-100 shadow-sm">
+                            <h3 class="text-base font-black text-navy uppercase tracking-wide mb-3 flex items-center gap-2">
+                                <i class="fa-solid fa-users text-primary"></i> <?= $group['category']; ?>
+                            </h3>
 
+                            <?php if (!empty($group['leader'])): ?>
+                                <div class="mb-3 pl-3 border-l-2 border-primary">
+                                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Ketua</span>
+                                    <span class="text-sm font-bold text-slate-800"><?= $group['leader']; ?></span>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php if (!empty($group['members']) && is_array($group['members'])): ?>
+                                <div class="pl-3">
+                                    <?php if (!empty($group['leader'])): ?>
+                                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Anggota</span>
+                                    <?php endif; ?>
+                                    <ul class="space-y-2">
+                                        <?php foreach ($group['members'] as $idx => $member): ?>
+                                            <li class="text-xs sm:text-sm text-slate-700 flex items-start gap-2">
+                                                <?php if (is_array($member)): ?>
+                                                    <div>
+                                                        <span class="font-bold text-slate-900"><?= $member['name']; ?></span>
+                                                        <?php if (!empty($member['role'])): ?>
+                                                            <span class="block text-xs text-slate-500 italic"><?= $member['role']; ?></span>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                <?php else: ?>
+                                                    <span class="text-slate-400 font-medium shrink-0"><?= ($idx + 1); ?>.</span>
+                                                    <span class="font-medium text-slate-800"><?= $member; ?></span>
+                                                <?php endif; ?>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </section>

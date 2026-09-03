@@ -1,3 +1,5 @@
+<?php
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,7 +19,7 @@
     <link rel="stylesheet" href="<?= base_url('assets/dist/'); ?>css/adminlte.min.css">
     <style>
         body.login-page {
-            background-image: url('<?= base_url('assets/img/') ?>bc.png');
+            background-image: url('<?= base_url('assets/uploads/img/') ?><?= $domain['background_image'] ?>');
             /* Ganti dengan URL gambar Anda */
             background-size: cover;
             background-position: center;
@@ -71,9 +73,13 @@
             </div>
             <!-- /.card-body -->
             <div class="card-footer">
-                <div class="d-flex justify-content-between">
-                    <a href="<?= base_url('admin/forgot_password'); ?>">Forgot password?</a>
-                    <a href="<?= base_url('admin/register'); ?>" class="text-right">Register a new account</a>
+                <div class="card-footer">
+                    <?php if ($domain['id'] == 11): ?>
+                        <div class="d-flex justify-content-between">
+                            <a href="<?= base_url('admin/forgot_password'); ?>">Forgot password?</a>
+                            <a href="<?= base_url('admin/register'); ?>" class="text-right">Register a new account</a>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
             <!-- /.card -->

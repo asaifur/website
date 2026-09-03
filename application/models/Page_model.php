@@ -1,4 +1,7 @@
 <?php
+
+use PhpParser\Node\Expr\FuncCall;
+
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Page_model extends CI_Model
@@ -264,5 +267,194 @@ class Page_model extends CI_Model
             ->where('status', 1)
             ->get('table_pages')
             ->result();
+    }
+    public function view_jurnal()
+    {
+        // Mengambil parameter dari DataTables POST request (Server-Side)
+        $id_domain = $this->input->post('id_domain', true);
+        $draw      = $this->input->post('draw', true);
+        $start     = $this->input->post('start', true);
+        $length    = $this->input->post('length', true);
+        $search    = $this->input->post('search', true);
+        $order     = $this->input->post('order', true);
+
+        // Tentukan nama tabel jurnal DOAJ
+        $table = 'table_jurnal';
+
+        $this->db->from($table);
+
+        // Filter berdasarkan id_domain
+        if ($id_domain) {
+            $this->db->where('id_domain', $id_domain);
+        }
+
+        // Total data keseluruhan tanpa filter pencarian
+        $totalRecords = $this->db->count_all_results('', false);
+
+        // Logika Pencarian (Searching) DataTables untuk struktur DOAJ
+        if (!empty($search['value'])) {
+            $keyword = $search['value'];
+            $this->db->group_start();
+            $this->db->like('title', $keyword);
+            $this->db->or_like('authors', $keyword);
+            $this->db->or_like('issn', $keyword);
+            $this->db->or_like('subject', $keyword);
+            $this->db->or_like('publisher', $keyword);
+            $this->db->or_like('doi', $keyword);
+            $this->db->group_end();
+        }
+
+        // Hitung total data setelah filter pencarian
+        $totalFiltered = $this->db->count_all_results('', false);
+
+        // Logika Pengurutan (Ordering) DataTables disesuaikan dengan kolom DOAJ
+        if (isset($order)) {
+            $columns = ['id', 'title', 'authors', 'issn', 'subject', 'publication_date'];
+            $colIdx = $order['0']['column'];
+            $colDir = $order['0']['dir'];
+            if (isset($columns[$colIdx])) {
+                $this->db->order_by($columns[$colIdx], $colDir);
+            }
+        } else {
+            $this->db->order_by('id', 'DESC');
+        }
+
+        // Batasi (Limit) untuk Pagination Server-Side
+        if ($length != -1) {
+            $this->db->limit($length, $start);
+        }
+
+        $query = $this->db->get();
+        $result = $query->result();
+
+        $data = [];
+        $no = $start + 1;
+
+        foreach ($result as $row) {
+            $rowData = [];
+            $rowData['no']               = $no++;
+            $rowData['title']            = '<span class="font-weight-bold text-dark">' . $row->title . '</span><br><small class="text-muted">DOI: ' . $row->doi . '</small>';
+            $rowData['authors']          = $row->authors;
+            $rowData['issn']             = '<span class="badge badge-secondary">' . $row->issn . '</span>';
+            $rowData['subject']          = '<span class="badge badge-info">' . $row->subject . '</span>';
+            $rowData['publication_date'] = !empty($row->publication_date) ? date('d-m-Y', strtotime($row->publication_date)) : '-';
+
+            // Tombol Aksi untuk setiap baris data
+            $rowData['aksi'] = '
+                <a href="' . $row->url_article . '" target="_blank" class="btn btn-primary btn-sm" title="Lihat Artikel"><i class="fas fa-external-link-alt"></i></a>
+                <button class="btn btn-info btn-sm btn-view" data-id="' . $row->id . '" title="Detail"><i class="fas fa-eye"></i></button>
+                <button class="btn btn-warning btn-sm btn-update text-white" data-id="' . $row->id . '" title="Edit"><i class="fas fa-edit"></i></button>
+                <button class="btn btn-danger btn-sm btn-delete" data-id="' . $row->id . '" title="Hapus"><i class="fas fa-trash"></i></button>
+            ';
+
+            $data[] = $rowData;
+        }
+
+        $output = [
+            "draw"            => intval($draw),
+            "recordsTotal"    => intval($totalRecords),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $data
+        ];
+
+        return json_encode($output);
+    }
+
+    public function view_seminar()
+    {
+        // Mengambil parameter dari DataTables POST request (Server-Side)
+        $id_domain = $this->input->post('id_domain', true);
+        $draw      = $this->input->post('draw', true);
+        $start     = $this->input->post('start', true);
+        $length    = $this->input->post('length', true);
+        $search    = $this->input->post('search', true);
+        $order     = $this->input->post('order', true);
+
+        // Tentukan nama tabel seminar/event
+        $table = 'table_events';
+
+        $this->db->from($table);
+
+        // Filter berdasarkan id_domain
+        if ($id_domain) {
+            $this->db->where('id_domain', $id_domain);
+        }
+
+        // Total data keseluruhan tanpa filter pencarian
+        $totalRecords = $this->db->count_all_results('', false);
+
+        // Logika Pencarian (Searching) DataTables untuk struktur seminar
+        if (!empty($search['value'])) {
+            $keyword = $search['value'];
+            $this->db->group_start();
+            $this->db->like('event_title', $keyword);
+            $this->db->or_like('event_category', $keyword);
+            $this->db->or_like('speaker_name', $keyword);
+            $this->db->or_like('speaker_title', $keyword);
+            $this->db->or_like('event_location', $keyword);
+            $this->db->or_like('event_type', $keyword);
+            $this->db->or_like('status', $keyword);
+            $this->db->group_end();
+        }
+
+        // Hitung total data setelah filter pencarian
+        $totalFiltered = $this->db->count_all_results('', false);
+
+        // Logika Pengurutan (Ordering) DataTables disesuaikan dengan kolom seminar
+        if (isset($order)) {
+            $columns = ['id_event', 'event_title', 'event_category', 'speaker_name', 'event_date', 'event_location', 'status'];
+            $colIdx = $order['0']['column'];
+            $colDir = $order['0']['dir'];
+            if (isset($columns[$colIdx])) {
+                $this->db->order_by($columns[$colIdx], $colDir);
+            }
+        } else {
+            $this->db->order_by('id_event', 'DESC');
+        }
+
+        // Batasi (Limit) untuk Pagination Server-Side
+        if ($length != -1) {
+            $this->db->limit($length, $start);
+        }
+
+        $query = $this->db->get();
+        $result = $query->result();
+
+        $data = [];
+        $no = $start + 1;
+
+        foreach ($result as $field) {
+            $rowData = [];
+            $rowData['no']             = $no++;
+            $rowData['event_title']    = '<span class="font-weight-bold text-dark">' . $field->event_title . '</span>';
+            $rowData['event_category'] = '<span class="badge badge-info">' . $field->event_category . '</span>';
+            $rowData['speaker_name']   = $field->speaker_name . ($field->speaker_title ? '<br><small class="text-muted">' . $field->speaker_title . '</small>' : '');
+            $rowData['event_date']     = !empty($field->event_date) ? date('d M Y H:i', strtotime($field->event_date)) : '-';
+            $rowData['event_location'] = '<span class="badge badge-secondary">' . $field->event_type . '</span><br><small>' . $field->event_location . '</small>';
+
+            $statusBadge = 'success';
+            if ($field->status == 'Upcoming') $statusBadge = 'warning';
+            elseif ($field->status == 'Completed') $statusBadge = 'secondary';
+            elseif ($field->status == 'Cancelled') $statusBadge = 'danger';
+
+            $rowData['status']         = '<span class="badge badge-' . $statusBadge . '">' . $field->status . '</span>';
+
+            // Tombol Aksi untuk setiap baris data seminar
+            $rowData['aksi'] = '
+                <button type="button" class="btn btn-info btn-sm btn-update" data-id="' . $field->id_event . '" title="Edit"><i class="fas fa-edit"></i></button>
+                <button type="button" class="btn btn-danger btn-sm btn-delete" data-id="' . $field->id_event . '" title="Hapus"><i class="fas fa-trash"></i></button>
+            ';
+
+            $data[] = $rowData;
+        }
+
+        $output = [
+            "draw"            => intval($draw),
+            "recordsTotal"    => intval($totalRecords),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $data
+        ];
+
+        return json_encode($output);
     }
 }

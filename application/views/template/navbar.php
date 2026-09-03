@@ -5,7 +5,7 @@
             <img src="<?= base_url("assets/uploads/img/" . $domain['image_domain']) ?>" class="img-circle elevation-2" alt="Domain Logo" style="width: 40px; height: 40px; object-fit: cover;">
         </div>
         <div class="info">
-            <a href="#" class="d-block font-weight-bold text-truncate" style="max-width: 180px;"><?= $domain['meta_title'] ?></a>
+            <a href="<?= base_url() ?>" class="d-block font-weight-bold text-truncate" style="max-width: 180px;"><?= $domain['meta_title'] ?></a>
             <span class="badge badge-success navbar-badge position-static font-weight-normal px-2 py-1" style="font-size: 10px;">Active System</span>
         </div>
     </div>
@@ -15,13 +15,14 @@
         <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
 
             <li class="nav-item">
-                <a href="<?= base_url('dashboard/navigasi') ?>" class="nav-link <?= ($this->uri->segment(2) == 'navigasi') ? 'active shadow-sm' : ''; ?>">
+                <a href="<?= base_url('') ?>" class="nav-link <?= ($this->uri->segment(2) == 'navigasi') ? 'active shadow-sm' : ''; ?>">
                     <i class="nav-icon fas fa-tachometer-alt text-info"></i>
                     <p>Dashboard</p>
                 </a>
             </li>
 
-            <?php if (!empty($menus)): ?>
+            <?php if (!empty($menus)):
+                ?>
                 <?php foreach ($menus as $modul => $items): ?>
                     <li class="nav-header text-uppercase text-xs font-weight-bold text-secondary"><?= $modul; ?></li>
 

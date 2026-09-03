@@ -22,7 +22,7 @@ class Templates
         $this->ci->load->model('User_model');
         $role_id = $userdata['role'];
         $data['modul'] = $this->ci->User_model->fetch_data_by_modul('user_menu', 'modul');
-        $menus = $this->ci->User_model->getMenu($admin, $role_id);
+        $menus = $this->ci->User_model->getMenu($admin, $userdata['id']);
         $groupedMenus = [];
 
         foreach ($menus as $m) {

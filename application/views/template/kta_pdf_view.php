@@ -236,7 +236,7 @@
 
         <!-- Data Content -->
         <div class="kta-info">
-            <div class="kta-number"><?= !empty($user['nomor_anggota']) ? $user['nomor_anggota'] : '190188000003'; ?></div>
+            <div class="kta-number"> <?= date('Ymd', strtotime($user['date_created'])) . '000' . $user['id_users']; ?></div>
             <div class="kta-name"><?= $user['username']; ?></div>
             <div class="kta-field"><strong><?= !empty($user['bidang_ilmu']) ? $user['bidang_ilmu'] : 'ILMU KEPENDIDIKAN'; ?></strong></div>
             <div class="kta-institution"><?= !empty($user['institusi']) ? $user['institusi'] : 'Perguruan Tinggi Nusantara'; ?></div>

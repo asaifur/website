@@ -1,7 +1,6 @@
 <div class="card">
     <div class="card-header">
         <h4> Table <?= $title ?></h4>
-        <button type="button" class="btn  btn-outline-primary"> <i class="fas fa-plus"></i> Data User</button>
     </div>
     <div class="card-body">
 
@@ -32,6 +31,8 @@
         </div>
     </div>
 </div>
+
+
 <?php $this->load->view('template/scriptes.php') ?>
 <script>
     $(document).ready(function() {
@@ -48,24 +49,24 @@
         });
         // 1. Inisialisasi DataTable
         var tableTransaksi; // Gunakan satu nama variabel yang konsisten
+
         tableTransaksi = $('#myTable').DataTable({
             "scrollX": true,
             "processing": true,
             "autoWidth": false,
             "serverSide": true,
             "order": [],
-            // 🔹 Pagination & limit data
             "paging": true,
-            "pageLength": 10, // tampil 10 data per halaman
-            "lengthChange": false, // sembunyikan dropdown jumlah data
+            "pageLength": 10,
+            "lengthChange": false,
             "searching": true,
             "info": true,
-
             "ajax": {
                 "url": "<?= base_url('dashboard/view_all_user_access'); ?>",
                 "type": "POST",
                 "data": function(data) {
-                    // Anda bisa menambahkan parameter custom di sini jika perlu
+                    // Parameter tambahan jika diperlukan oleh backend
+                    data.id_domain = "<?= isset($domain['id']) ? $domain['id'] : 1; ?>";
                 }
             },
             "columns": [{
@@ -84,48 +85,56 @@
                     "data": "noTelepon"
                 },
                 {
-                    // Menggunakan id_users untuk parameter button aksi
-                    "data": "id_users",
+                    "data": "aksi",
                     "orderable": false,
-                    "searchable": false,
-                    "render": function(data, type, row) {
-                        // Contoh logika penanganan kondisi qc
-                        let disabled = (row.qc == 1) ? 'disabled' : '';
-
-                        // Mengembalikan template literal tombol aksi yang benar
-                        return `
-                    <button class="btn btn-sm btn-info btn-view" data-id="${data}" ${disabled}>
-                        <i class="fas fa-eye"></i> Detail
-                    </button>
-                    <button class="btn btn-sm btn-warning btn-update" data-id="${data}" ${disabled}>
-                        <i class="fas fa-edit"></i> Edit
-                    </button>
-                    <button class="btn btn-sm btn-success btn-update-akses" data-id="${data}" ${disabled}>
-                        <i class="fas fa-user-shield"></i> Akses
-                    </button>
-                `;
-                    }
+                    "searchable": false
                 }
             ]
         });
+        $('#myTable').on('click', '.btn-view', function() {
+            let id = $(this).data('id');
 
+            $.ajax({
+                url: "<?= base_url('Dashboard/addMasterAkses/'); ?>",
+                type: "POST",
+                data: {
+                    id: id,
+                    action: 'view'
+                },
+                beforeSend: function() {
+                    $('#modalAction').html(`
+                <div class="modal-body text-center p-5">
+                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                    <p>Loading...</p>
+                </div>
+            `);
+                    $('#modal-xl').modal('show');
+                },
+                success: function(response) {
+                    $('#modalAction').html(response);
+                },
+                error: function() {
+                    alert('Gagal memuat form');
+                }
+            });
+
+        })
         $('#myTable').on('click', '.btn-update-akses', function() {
             let id = $(this).data('id');
 
             $.ajax({
-                url: "<?= base_url('Dashboard/addMasterAkses/update_akses'); ?>",
+                url: "<?= base_url('Dashboard/addMasterAkses/update'); ?>",
                 type: "POST",
                 data: {
                     id: id
                 },
                 beforeSend: function() {
-                    $('#modalAction').html(` <
-                                                div class = "modal-body text-center p-5" >
-                                                <
-                                                i class = "fas fa-spinner fa-spin fa-2x" > < /i> <
-                                                p > Loading... < /p> <
-                                                    /div>
-                                                `);
+                    $('#modalAction').html(`
+                <div class="modal-body text-center p-5">
+                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                    <p>Loading...</p>
+                </div>
+            `);
                     $('#modal-xl').modal('show');
                 },
                 success: function(response) {
@@ -147,13 +156,12 @@
                     id: id
                 },
                 beforeSend: function() {
-                    $('#modalAction').html(` <
-                                                div class = "modal-body text-center p-5" >
-                                                <
-                                                i class = "fas fa-spinner fa-spin fa-2x" > < /i> <
-                                                p > Loading... < /p> <
-                                                    /div>
-                                                `);
+                    $('#modalAction').html(`
+                <div class="modal-body text-center p-5">
+                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                    <p>Loading...</p>
+                </div>
+            `);
                     $('#modal-xl').modal('show');
                 },
                 success: function(response) {

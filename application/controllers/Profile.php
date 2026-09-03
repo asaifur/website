@@ -90,7 +90,7 @@ class Profile extends CI_Controller
         $data['menus'] = $this->db->get('user_menu')->result();
 
         $akses = $this->db->get_where('user_access_menu', [
-            'role_id' => $id_users
+            'user_id' => $id_users
         ])->result();
 
         $akses_menu = [];
@@ -100,15 +100,15 @@ class Profile extends CI_Controller
         }
         $data['akses_menu'] = $akses_menu;
 
-        $data['format'] = $this->Halal_model->format_action('format_tambah_users', $action)->result();
-        $data['modul'] = $this->Halal_model->fetch_data_by_modul('user_menu', 'modul');
+        $data['format'] = $this->User_model->format_action('format_tambah_users', $action)->result();
+        $data['modul'] = $this->User_model->fetch_data_by_modul('user_menu', 'modul');
         $data['action'] = $action;
         $this->load->view('profile/viewAkses', $data);
     }
 
     public function save_access()
     {
-        $role_id = $this->input->post('id');
+        $user_id = $this->input->post('id');
         $menus   = $this->input->post('menu'); // menu yang dicentang
 
         // ambil semua menu
@@ -122,7 +122,7 @@ class Profile extends CI_Controller
 
                 // cek apakah sudah ada
                 $exist = $this->db->get_where('user_access_menu', [
-                    'role_id' => $role_id,
+                    'user_id' => $user_id,
                     'menu_id' => $menu_id
                 ])->row();
 
@@ -130,14 +130,14 @@ class Profile extends CI_Controller
 
                     // jika belum ada → insert
                     $this->db->insert('user_access_menu', [
-                        'role_id' => $role_id,
+                        'user_id' => $user_id,
                         'menu_id' => $menu_id
                     ]);
                 }
             } else {
 
                 // jika tidak dicentang → hapus akses
-                $this->db->where('role_id', $role_id);
+                $this->db->where('user_id', $user_id);
                 $this->db->where('menu_id', $menu_id);
                 $this->db->delete('user_access_menu');
             }

@@ -60,6 +60,12 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
+                                        <label for="noTelepon" class="col-sm-2 col-form-label">No Telepon</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="noTelepon" name="noTelepon" value="<?= $user['noTelepon']; ?>" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
                                         <label for="inputInstitution" class="col-sm-2 col-form-label">Institution</label>
                                         <div class="col-sm-10">
                                             <input type="text" class="form-control" id="institusi" name="institusi" value="<?= $user['institusi']; ?>" required>

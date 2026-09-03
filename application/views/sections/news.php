@@ -28,7 +28,7 @@ $dom_id   = !empty($section->span) ? $section->span : (!empty($section->section_
 $tagline  = !empty($section->subtitle) ? $section->subtitle : 'Berita Terbaru';
 $title    = !empty($section->title) ? $section->title : 'Artikel & Tips Dapur Komersial';
 $btn_text = !empty($section->btn_text) ? $section->btn_text : 'Lihat Semua Artikel';
-$btn_url  = !empty($section->btn_url) ? $section->btn_url : base_url('blog');
+$btn_url  = !empty($section->btn_url) ? $section->btn_url : base_url('');
 ?>
 
 <section id="<?= $dom_id; ?>" class="py-20 bg-slate-50 border-t border-slate-200">
@@ -101,14 +101,6 @@ $btn_url  = !empty($section->btn_url) ? $section->btn_url : base_url('blog');
                         </div>
                     </div>
                 <?php endforeach; ?>
-            <?php else : ?>
-                <!-- Peringatan Jika Data Kosong -->
-                <div class="col-span-full text-center py-12 bg-white rounded-xl border border-dashed border-slate-300">
-                    <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center text-2xl mx-auto mb-3">
-                        <i class="fa-regular fa-newspaper"></i>
-                    </div>
-                    <p class="text-slate-500 font-medium">Belum ada artikel atau berita yang diterbitkan.</p>
-                </div>
             <?php endif; ?>
         </div>
 

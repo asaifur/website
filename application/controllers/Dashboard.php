@@ -1431,4 +1431,441 @@ class Dashboard extends MY_Controller
         // Contoh menggunakan view HTML khusus cetak KTA
         $this->load->view('template/kta_pdf_view', $data);
     }
+
+    public function masterAkses()
+    {
+        // Cek apakah user sudah login
+        if (!$this->session->userdata('logged_in') && !$this->session->userdata('id')) {
+            redirect('admin');
+            return;
+        }
+
+        $host = $this->_get_current_domain();
+
+        // Ambil data domain aktif
+        $domain = $this->db->get_where('table_domain', [
+            'domain_name' => $host,
+            'is_active'   => 1
+        ])->row_array();
+
+        if (!$domain) {
+            show_404();
+            return;
+        }
+
+        // Ambil data relasi user dengan akses menu
+
+
+        $data['domain'] = $domain;
+        $data['title']  = "Master Akses Menu";
+
+        // Memuat template AdminLTE 3
+        $this->templates->load('adminlte/master_akses', $data);
+    }
+    public function view_all_user_access()
+    {
+        if (!$this->input->is_ajax_request()) {
+            show_404();
+        }
+
+        // Dapatkan domain aktif saat ini
+        $host = isset($_SERVER['HTTP_HOST']) ? explode(':', $_SERVER['HTTP_HOST'])[0] : '';
+        $domain = $this->db->get_where('table_domain', ['domain_name' => $host])->row_array();
+        $id_domain = $domain ? $domain['id'] : 1;
+
+        // Ambil data dari model atau query builder dengan filter id_domain
+        $this->db->select('*');
+        $this->db->from('users');
+        $this->db->where('id_domain', $id_domain); // 🔹 Filter utama berdasarkan domain aktif
+
+        // Logika tambahan DataTables Server-Side (pencarian, limit, order, dll)
+        // ... (sesuaikan dengan library/model DataTables yang Anda gunakan)
+
+        $list = $this->db->get()->result();
+
+        $data = [];
+        $no = $_POST['start'] ?? 0;
+
+        foreach ($list as $user) {
+            $no++;
+            $row = [];
+            $row['id_users'] = $user->id_users;
+            $row['username'] = $user->username;
+            $row['email']    = $user->email;
+            $row['noTelepon'] = $user->noTelepon;
+
+            // Tombol aksi di dalam tabel
+            $row['aksi'] = '
+            <button class="btn btn-info btn-sm btn-view" data-id="' . $user->id_users . '"><i class="fas fa-eye"></i></button>
+            <button class="btn btn-warning btn-sm btn-update-akses text-white" data-id="' . $user->id_users . '"><i class="fas fa-key"></i></button>
+            <button class="btn btn-success btn-sm btn-update" data-id="' . $user->id_users . '"><i class="fas fa-edit"></i></button>
+        ';
+
+            $data[] = $row;
+        }
+
+        $output = [
+            "draw" => $_POST['draw'] ?? 1,
+            "recordsTotal" => $this->db->where('id_domain', $id_domain)->from('users')->count_all_results(),
+            "recordsFiltered" => count($data),
+            "data" => $data,
+        ];
+
+        echo json_encode($output);
+    }
+
+    public function addMasterAkses($action = null)
+    {
+        if (!$this->input->is_ajax_request()) {
+            show_404();
+        }
+        $id_users = $this->input->post('id');
+
+        $data['row'] = $this->db->get_where('users', ['id_users' => $id_users])->row();
+        $data['menus'] = $this->db->get('user_menu')->result();
+
+        $akses = $this->db->get_where('user_access_menu', [
+            'user_id' => $id_users
+        ])->result();
+
+        $akses_menu = [];
+
+        foreach ($akses as $a) {
+            $akses_menu[] = $a->menu_id;
+        }
+        $data['akses_menu'] = $akses_menu;
+        $data['modul'] = $this->User_model->fetch_data_by_modul('user_menu', 'modul');
+        $data['action'] = $action;
+        $this->load->view('profile/viewAkses', $data);
+    }
+
+    public function seminar()
+    {
+        $host = $_SERVER['HTTP_HOST'];
+
+        $domain = $this->db
+            ->where('url_domain', $host)
+            ->get('table_domain')
+            ->row_array();
+
+        if (!$domain) {
+            show_404();
+        }
+        $data['domain']      = $domain;
+        $data['id_domain']  = $domain['id'];
+        $data['title'] = "Data Jurnal";
+        $this->templates->load('adminlte/seminar', $data);
+    }
+
+    public function view_seminar()
+    {
+        echo $this->Page_model->view_seminar();
+    }
+
+    public function addSeminar($action, $id = null)
+    {
+        $data['action'] = $action;
+        $data['format'] = $this->User_model->format_action('format_seminar', $action)->result();
+
+        if ($action <> "insert") {
+            $id = $this->input->post('id');
+            $data['dtKolom'] = $this->User_model->fetch_data('table_seminar', ['id' => $id])->row();
+        }
+        $this->load->view('adminlte/addJournal', $data);
+    }
+
+    public function addSeminarAction($action)
+    {
+        // Tangkap parameter ID dari POST (diperlukan untuk update/delete)
+
+        $host = $_SERVER['HTTP_HOST'];
+
+        $domain = $this->db
+            ->where('url_domain', $host)
+            ->get('table_domain')
+            ->row_array();
+
+        if (!$domain) {
+            show_404();
+        }
+        $data['domain']      = $domain;
+
+
+
+        $id = $this->input->post('id', true);
+
+        // Jika aksi adalah delete, tidak perlu memproses format kolom form
+        if ($action == 'delete') {
+            if (empty($id)) {
+                return $this->output
+                    ->set_content_type('application/json')
+                    ->set_output(json_encode(['status' => 'error', 'message' => 'ID data tidak ditemukan!']));
+            }
+
+            // Ambil data file lama untuk dihapus fisiknya jika ada
+            $row = $this->db->get_where('table_seminar', ['id' => $id])->row();
+            if ($row && isset($row->file_pdf) && !empty($row->file_pdf) && file_exists('./assets/uploads/img/' . $row->file_pdf)) {
+                @unlink('./assets/uploads/img/' . $row->file_pdf);
+            }
+
+            $query = $this->db->delete('table_seminar', ['id' => $id]);
+            $message = 'Data Seminar berhasil dihapus.';
+
+            if ($query) {
+                $response = ['status' => 'success', 'message' => $message];
+            } else {
+                $response = ['status' => 'error', 'message' => 'Gagal menghapus data dari database.'];
+            }
+
+            return $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode($response));
+        }
+
+        // Ambil konfigurasi format kolom dinamis berdasarkan tabel format_seminarsemin
+        $format = $this->User_model->format_action('format_seminar', $action)->result();
+        $saveData = [];
+
+        foreach ($format as $kolom) {
+            $field = $kolom->code;
+
+            if ($kolom->type == "DATE") {
+                // Gunakan tanggal saat ini jika tipe DATE
+                $saveData[$field] = date('Y-m-d H:i:s');
+            } elseif ($kolom->type == "FILE") {
+                // Ambil nilai file lama dari input hidden (old_fieldname)
+                $old_file = $this->input->post('old_' . $field, true);
+                $file_name = $old_file;
+
+                // Periksa apakah ada file baru yang diunggah sesuai nama field kolom
+                if (!empty($_FILES[$field]['name'])) {
+                    $config['upload_path']   = './assets/uploads/img/';
+                    $config['allowed_types'] = 'jpg|jpeg|png|webp|pdf';
+                    $config['max_size']      = 5120; // 5MB
+                    $config['encrypt_name']  = TRUE;
+
+                    // Inisialisasi ulang library upload per iterasi atau gunakan initialize
+                    if (!isset($this->upload)) {
+                        $this->load->library('upload', $config);
+                    } else {
+                        $this->upload->initialize($config);
+                    }
+
+                    if ($this->upload->do_upload($field)) {
+                        // Hapus file fisik lama jika ada file pengganti baru
+                        if (!empty($old_file) && file_exists('./assets/uploads/img/' . $old_file)) {
+                            @unlink('./assets/uploads/img/' . $old_file);
+                        }
+                        $uploadData = $this->upload->data();
+                        $file_name = $uploadData['file_name'];
+                    } else {
+                        return $this->output
+                            ->set_content_type('application/json')
+                            ->set_output(json_encode([
+                                'status' => 'error',
+                                'message' => $this->upload->display_errors('', '')
+                            ]));
+                    }
+                }
+                $saveData[$field] = $file_name;
+            } else {
+                // Tangkap input teks, select, atau textarea biasa
+                $saveData[$field] = $this->input->post($field, true);
+            }
+        }
+        $saveData['id_domain']  = $domain['id'];
+        // Eksekusi Query berdasarkan jenis aksi
+        if ($action == 'insert') {
+            $query = $this->db->insert('table_jurnal', $saveData);
+            $message = 'Data jurnal berhasil ditambahkan.';
+        } elseif ($action == 'edit' || $action == 'update') {
+            if (empty($id)) {
+                return $this->output
+                    ->set_content_type('application/json')
+                    ->set_output(json_encode(['status' => 'error', 'message' => 'ID data tidak valid untuk pembaruan!']));
+            }
+            $this->db->where('id', $id);
+            $query = $this->db->update('table_jurnal', $saveData);
+            $message = 'Data jurnal berhasil diperbarui.';
+        } else {
+            return $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['status' => 'error', 'message' => 'Aksi tidak valid!']));
+        }
+
+        if ($query) {
+            $response = ['status' => 'success', 'message' => $message];
+        } else {
+            $response = ['status' => 'error', 'message' => 'Gagal memproses database.'];
+        }
+
+        return $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($response));
+    }
+
+    public function jurnal()
+    {
+        $host = $_SERVER['HTTP_HOST'];
+
+        $domain = $this->db
+            ->where('url_domain', $host)
+            ->get('table_domain')
+            ->row_array();
+
+        if (!$domain) {
+            show_404();
+        }
+        $data['domain']      = $domain;
+        $data['id_domain']  = $domain['id'];
+        $data['title'] = "Data Jurnal";
+        $this->templates->load('adminlte/jurnal', $data);
+    }
+
+    public function view_jurnal()
+    {
+        echo $this->Page_model->view_jurnal();
+    }
+
+    public function addJournal($action, $id = null)
+    {
+        $data['action'] = $action;
+        $data['format'] = $this->User_model->format_action('format_jurnal', $action)->result();
+
+        if ($action <> "insert") {
+            $id = $this->input->post('id');
+            $data['dtKolom'] = $this->User_model->fetch_data('table_jurnal', ['id' => $id])->row();
+        }
+        $this->load->view('adminlte/addJournal', $data);
+    }
+
+    public function addJurnalAction($action)
+    {
+        // Tangkap parameter ID dari POST (diperlukan untuk update/delete)
+
+        $host = $_SERVER['HTTP_HOST'];
+
+        $domain = $this->db
+            ->where('url_domain', $host)
+            ->get('table_domain')
+            ->row_array();
+
+        if (!$domain) {
+            show_404();
+        }
+        $data['domain']      = $domain;
+
+
+
+        $id = $this->input->post('id', true);
+
+        // Jika aksi adalah delete, tidak perlu memproses format kolom form
+        if ($action == 'delete') {
+            if (empty($id)) {
+                return $this->output
+                    ->set_content_type('application/json')
+                    ->set_output(json_encode(['status' => 'error', 'message' => 'ID data tidak ditemukan!']));
+            }
+
+            // Ambil data file lama untuk dihapus fisiknya jika ada
+            $row = $this->db->get_where('table_jurnal', ['id' => $id])->row();
+            if ($row && isset($row->file_pdf) && !empty($row->file_pdf) && file_exists('./assets/uploads/img/' . $row->file_pdf)) {
+                @unlink('./assets/uploads/img/' . $row->file_pdf);
+            }
+
+            $query = $this->db->delete('table_jurnal', ['id' => $id]);
+            $message = 'Data jurnal berhasil dihapus.';
+
+            if ($query) {
+                $response = ['status' => 'success', 'message' => $message];
+            } else {
+                $response = ['status' => 'error', 'message' => 'Gagal menghapus data dari database.'];
+            }
+
+            return $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode($response));
+        }
+
+        // Ambil konfigurasi format kolom dinamis berdasarkan tabel format_jurnal
+        $format = $this->User_model->format_action('format_jurnal', $action)->result();
+        $saveData = [];
+
+        foreach ($format as $kolom) {
+            $field = $kolom->code;
+
+            if ($kolom->type == "DATE") {
+                // Gunakan tanggal saat ini jika tipe DATE
+                $saveData[$field] = date('Y-m-d H:i:s');
+            } elseif ($kolom->type == "FILE") {
+                // Ambil nilai file lama dari input hidden (old_fieldname)
+                $old_file = $this->input->post('old_' . $field, true);
+                $file_name = $old_file;
+
+                // Periksa apakah ada file baru yang diunggah sesuai nama field kolom
+                if (!empty($_FILES[$field]['name'])) {
+                    $config['upload_path']   = './assets/uploads/img/';
+                    $config['allowed_types'] = 'jpg|jpeg|png|webp|pdf';
+                    $config['max_size']      = 5120; // 5MB
+                    $config['encrypt_name']  = TRUE;
+
+                    // Inisialisasi ulang library upload per iterasi atau gunakan initialize
+                    if (!isset($this->upload)) {
+                        $this->load->library('upload', $config);
+                    } else {
+                        $this->upload->initialize($config);
+                    }
+
+                    if ($this->upload->do_upload($field)) {
+                        // Hapus file fisik lama jika ada file pengganti baru
+                        if (!empty($old_file) && file_exists('./assets/uploads/img/' . $old_file)) {
+                            @unlink('./assets/uploads/img/' . $old_file);
+                        }
+                        $uploadData = $this->upload->data();
+                        $file_name = $uploadData['file_name'];
+                    } else {
+                        return $this->output
+                            ->set_content_type('application/json')
+                            ->set_output(json_encode([
+                                'status' => 'error',
+                                'message' => $this->upload->display_errors('', '')
+                            ]));
+                    }
+                }
+                $saveData[$field] = $file_name;
+            } else {
+                // Tangkap input teks, select, atau textarea biasa
+                $saveData[$field] = $this->input->post($field, true);
+            }
+        }
+        $saveData['id_domain']  = $domain['id'];
+        // Eksekusi Query berdasarkan jenis aksi
+        if ($action == 'insert') {
+            $query = $this->db->insert('table_seminar', $saveData);
+            $message = 'Data Seminar berhasil ditambahkan.';
+        } elseif ($action == 'edit' || $action == 'update') {
+            if (empty($id)) {
+                return $this->output
+                    ->set_content_type('application/json')
+                    ->set_output(json_encode(['status' => 'error', 'message' => 'ID data tidak valid untuk pembaruan!']));
+            }
+            $this->db->where('id', $id);
+            $query = $this->db->update('table_seminar', $saveData);
+            $message = 'Data seminar berhasil diperbarui.';
+        } else {
+            return $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['status' => 'error', 'message' => 'Aksi tidak valid!']));
+        }
+
+        if ($query) {
+            $response = ['status' => 'success', 'message' => $message];
+        } else {
+            $response = ['status' => 'error', 'message' => 'Gagal memproses database.'];
+        }
+
+        return $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($response));
+    }
 }

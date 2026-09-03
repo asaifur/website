@@ -1,7 +1,7 @@
+<!-- views/section/footer.php -->
 <?php
-// Memanggil fungsi helper warna jika tersedia
-$primary_color = function_exists('get_color') ? get_color('primary') : (!empty($domain->primary_color) ? $domain->primary_color : '#b91c1c');
-$navy_color    = function_exists('get_color') ? get_color('navy') : (!empty($domain->navy_color) ? $domain->navy_color : '#0f172a');
+$primary_color = function_exists('get_color') ? get_color('primary') : (!empty($domain->primary_color) ? $domain->primary_color : '#E63946');
+$navy_color = function_exists('get_color') ? get_color('navy') : (!empty($domain->navy_color) ? $domain->navy_color : '#0B132B');
 ?>
 
 <!-- Floating Contact WhatsApp & Call (Left Floating) -->
@@ -83,222 +83,259 @@ $navy_color    = function_exists('get_color') ? get_color('navy') : (!empty($dom
 
 <div class="floating-contact">
     <!-- WhatsApp Button -->
-    <?php
-    $wa_link = !empty($domain->wa_link) ? $domain->wa_link : (!empty($this->domain->wa_link) ? $this->domain->wa_link : '');
-    if (!empty($wa_link)) :
-    ?>
-        <a href="<?= $wa_link; ?>" target="_blank" class="float-btn" title="Chat WhatsApp">
+    <?php if (!empty($domain->wa_link) || !empty($this->domain->wa_link)) : ?>
+        <a href="<?= !empty($domain->wa_link) ? $domain->wa_link : $this->domain->wa_link; ?>" target="_blank" class="float-btn" title="Chat WhatsApp">
             <img src="<?= base_url('assets/uploads/img/fd14d9811e056a03b44e7c3e043b2476.png'); ?>" alt="WhatsApp">
             <span class="label">Chat WhatsApp</span>
         </a>
     <?php endif; ?>
 
     <!-- Phone Call Button -->
-    <?php
-    $telepon = !empty($domain->telepon) ? $domain->telepon : (!empty($this->domain->telepon) ? $this->domain->telepon : '');
-    if (!empty($telepon)) :
-    ?>
-        <a href="tel:<?= $telepon; ?>" class="float-btn" title="Telepon Kami">
+    <?php if (!empty($domain->telepon) || !empty($this->domain->telepon)) : ?>
+        <a href="tel:<?= !empty($domain->telepon) ? $domain->telepon : $this->domain->telepon; ?>" class="float-btn" title="Telepon Kami">
             <img src="<?= base_url('assets/uploads/img/b06f39c95463db9183a5d3fa912777ee.png'); ?>" alt="Telepon">
             <span class="label">Hubungi Kami</span>
         </a>
     <?php endif; ?>
 </div>
 
-<footer>
-    <!-- Footer Start-->
-    <div class="footer-main footer-bg" style="background-color: <?= $navy_color; ?> !important; color: #94a3b8;">
-        <div class="footer-area footer-padding">
-            <div class="container">
-                <div class="row d-flex justify-content-between">
+<!-- Main Footer (Tailwind & Dynamic CodeIgniter) -->
+<footer id="kontak" class="bg-navy text-gray-400 pt-16 pb-8 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
 
-                    <!-- Column 1: Logo & Company Desc -->
-                    <div class="col-xl-3 col-lg-3 col-md-5 col-sm-8">
-                        <div class="single-footer-caption mb-50">
-                            <div class="single-footer-caption mb-30">
-                                <div class="footer-logo">
-                                    <?php
-                                    $logoImg = !empty($this->domain->image_domain) ? $this->domain->image_domain : (!empty($domain->logo) ? $domain->logo : 'default.png');
-                                    ?>
-                                    <?php if (!empty($logoImg) && $logoImg !== 'default.png') : ?>
-                                        <a href="<?= base_url(); ?>"><img src="<?= base_url('assets/uploads/img/') . $logoImg; ?>" alt="Logo" style="max-height: 50px; width: auto; object-fit: contain;"></a>
-                                    <?php else : ?>
-                                        <a href="<?= base_url(); ?>"><img src="<?= base_url('assets/news/') ?>assets/img/logo/logo2_footer.png" alt=""></a>
-                                    <?php endif; ?>
-                                </div>
-                                <div class="footer-tittle">
-                                    <div class="footer-pera">
-                                        <p class="info1">
-                                            <?= !empty($this->domain->meta_description) ? $this->domain->meta_description : (!empty($domain->meta_description) ? $domain->meta_description : 'Perusahaan kontraktor spesialis kitchen equipment, fabrikasi stainless kustom, instalasi ducting exhaust, sistem fresh air, dan jaringan gas restoran profesional.'); ?>
-                                        </p>
-                                        <p class="info2">
-                                            <i class="fa-solid fa-location-dot text-danger mr-1"></i>
-                                            <?= !empty($domain->alamat) ? $domain->alamat : 'Jl. Raya Industri Komersial No. 88, Jabodetabek, Indonesia'; ?>
-                                        </p>
-                                        <p class="info2">
-                                            Phone: <?= !empty($domain->telepon) ? $domain->telepon : (!empty($this->domain->telepon) ? $this->domain->telepon : '+62 812-3456-7890'); ?>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <!-- Column 1: Company Profile & Social Media -->
+        <div class="space-y-4">
+            <div class="flex items-center space-x-3">
+                <?php
+                $logoImg = !empty($this->domain->image_domain) ? $this->domain->image_domain : ($domain->logo ?? 'default.png');
+                ?>
+                <?php if (!empty($logoImg) && $logoImg !== 'default.png') : ?>
+                    <img src="<?= base_url('assets/uploads/img/') . $logoImg; ?>" alt="Logo" class="h-10 w-auto object-contain">
+                <?php else : ?>
+                    <div class="w-10 h-10 bg-primary flex items-center justify-center rounded text-white font-black text-xl">SDR</div>
+                <?php endif; ?>
+                <span class="text-lg font-bold text-white tracking-tight">
+                    <?= !empty($domain->title) ? $domain->title : ($domain->meta_title ?? 'PT SOLUSI DAPUR RESTORAN'); ?>
+                </span>
+            </div>
 
-                    <!-- Column 2: Dynamic Articles & Blog / Popular Posts -->
-                    <div class="col-xl-4 col-lg-4 col-md-5 col-sm-7">
-                        <div class="single-footer-caption mb-50">
-                            <div class="footer-tittle">
-                                <h4 style="color: #ffffff; border-left: 3px solid <?= $primary_color; ?>; padding-left: 10px;">Artikel & Berita</h4>
-                            </div>
-                            <?php
-                            $domain_id = isset($this->domain->id) ? $this->domain->id : (!empty($domain->id) ? $domain->id : null);
-                            if ($domain_id && isset($this->Menu_model)) {
-                                $artikel = $this->Menu_model->fetch_data_pages_by_limit_order('table_pages', ['id_domain' => $domain_id, 'category' => '2'], 3)->result();
-                            } else {
-                                $artikel = [];
-                            }
-                            ?>
-                            <?php if (!empty($artikel)) : ?>
-                                <?php foreach ($artikel as $row) : ?>
-                                    <div class="whats-right-single mb-20">
-                                        <div class="whats-right-cap">
-                                            <h4><a href="<?= base_url('/') . $row->slug; ?>" style="color: #cbd5e1;"><?= $row->title; ?></a></h4>
-                                            <p><?= isset($row->created_at) ? date('d M Y', strtotime($row->created_at)) : 'Update Terbaru'; ?></p>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
-                            <?php else : ?>
-                                <div class="whats-right-single mb-20">
-                                    <div class="whats-right-cap">
-                                        <h4><a href="#jasa-gas" style="color: #cbd5e1;">Panduan Standar Pipa Gas Komersial</a></h4>
-                                        <p>Teknis & K3</p>
-                                    </div>
-                                </div>
-                                <div class="whats-right-single mb-20">
-                                    <div class="whats-right-cap">
-                                        <h4><a href="#jasa-exhaust" style="color: #cbd5e1;">Perhitungan Kapasitas Blower Exhaust</a></h4>
-                                        <p>Ventilasi Dapur</p>
-                                    </div>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    </div>
+            <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">
+                <?= !empty($this->domain->meta_description) ? $this->domain->meta_description : ($domain->meta_description ?? 'Perusahaan kontraktor spesialis kitchen equipment, fabrikasi stainless kustom, instalasi ducting exhaust, sistem fresh air, dan jaringan gas restoran profesional.'); ?>
+            </p>
 
-                    <!-- Column 3: Dynamic Navigasi Menu & Office Info -->
-                    <div class="col-xl-3 col-lg-3 col-md-5 col-sm-7">
-                        <div class="single-footer-caption mb-50">
-                            <div class="footer-tittle">
-                                <h4 style="color: #ffffff; border-left: 3px solid <?= $primary_color; ?>; padding-left: 10px;">Navigasi Utama</h4>
-                            </div>
-                            <ul class="space-y-2" style="list-style: none; padding: 0;">
-                                <?php if (!empty($menus)) : ?>
-                                    <?php foreach ($menus as $menu) : ?>
-                                        <li style="margin-bottom: 8px;">
-                                            <a href="<?= base_url('') . (is_array($menu) ? $menu['slug'] : $menu->slug); ?>" style="color: #cbd5e1; text-decoration: none;" class="hover:text-white transition">
-                                                <i class="fa-solid fa-angle-right text-xs mr-2" style="color: <?= $primary_color; ?>;"></i>
-                                                <?= is_array($menu) ? $menu['nama_menu'] : $menu->nama_menu; ?>
-                                            </a>
-                                        </li>
-                                    <?php endforeach; ?>
-                                <?php else : ?>
-                                    <li style="margin-bottom: 8px;"><a href="#beranda" style="color: #cbd5e1;">Beranda</a></li>
-                                    <li style="margin-bottom: 8px;"><a href="#tentang" style="color: #cbd5e1;">Tentang Kami</a></li>
-                                    <li style="margin-bottom: 8px;"><a href="#layanan" style="color: #cbd5e1;">Layanan & Jasa</a></li>
-                                    <li style="margin-bottom: 8px;"><a href="#produk" style="color: #cbd5e1;">Fabrikasi Stainless</a></li>
-                                <?php endif; ?>
-                            </ul>
-                        </div>
-                    </div>
-
-                </div>
+            <!-- Social Media Links -->
+            <div class="flex items-center space-x-3 pt-2 text-slate-300">
+                <?php if (!empty($this->domain->link_facebook) || !empty($domain->link_facebook)) : ?>
+                    <a href="<?= $this->domain->link_facebook ?? $domain->link_facebook; ?>" target="_blank" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-primary hover:text-white flex items-center justify-center transition">
+                        <i class="fa-brands fa-facebook-f text-xs"></i>
+                    </a>
+                <?php endif; ?>
+                <?php if (!empty($this->domain->link_instagram) || !empty($domain->link_instagram)) : ?>
+                    <a href="<?= $this->domain->link_instagram ?? $domain->link_instagram; ?>" target="_blank" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-primary hover:text-white flex items-center justify-center transition">
+                        <i class="fa-brands fa-instagram text-xs"></i>
+                    </a>
+                <?php endif; ?>
+                <?php if (!empty($this->domain->link_youtube) || !empty($domain->link_youtube)) : ?>
+                    <a href="<?= $this->domain->link_youtube ?? $domain->link_youtube; ?>" target="_blank" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-primary hover:text-white flex items-center justify-center transition">
+                        <i class="fa-brands fa-youtube text-xs"></i>
+                    </a>
+                <?php endif; ?>
+                <?php if (!empty($this->domain->link_twitter) || !empty($domain->link_twitter)) : ?>
+                    <a href="<?= $this->domain->link_twitter ?? $domain->link_twitter; ?>" target="_blank" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-primary hover:text-white flex items-center justify-center transition">
+                        <i class="fa-brands fa-x-twitter text-xs"></i>
+                    </a>
+                <?php endif; ?>
             </div>
         </div>
 
-        <!-- footer-bottom area -->
-        <div class="footer-bottom-area footer-bg" style="border-top: 1px solid #1e293b; padding: 20px 0;">
-            <div class="container">
-                <div class="footer-border">
-                    <div class="row d-flex align-items-center">
-                        <div class="col-xl-12">
-                            <div class="footer-copy-right text-center">
-                                <p style="color: #64748b; font-size: 13px;">
-                                    Copyright &copy;<script>
-                                        document.write(new Date().getFullYear());
-                                    </script>
-                                    <?= !empty($domain->title) ? $domain->title : (!empty($domain->meta_title) ? $domain->meta_title : 'PT Solusi Dapur Restoran'); ?>.
-                                    All rights reserved | Powered by
-                                    <a href="<?= base_url(); ?>" style="color: #94a3b8;" target="_blank"><?= !empty($domain->domain_name) ? $domain->domain_name : 'solusidapurrestoran.com'; ?></a>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <!-- Column 2: Dynamic Articles & Blog -->
+        <div>
+            <h4 class="text-sm font-bold text-white uppercase tracking-wider mb-4 border-l-2 border-primary pl-2">Artikel & Berita</h4>
+            <ul class="space-y-2 text-xs sm:text-sm">
+                <?php
+                $domain_id = isset($this->domain->id) ? $this->domain->id : ($domain->id ?? null);
+                if ($domain_id && isset($this->Menu_model)) {
+                    $artikel = $this->Menu_model->fetch_data_pages_by_limit_order('table_pages', ['id_domain' => $domain_id, 'category' => '2'])->result();
+                } else {
+                    $artikel = [];
+                }
+                ?>
+                <?php if (!empty($artikel)) : ?>
+                    <?php foreach ($artikel as $row) : ?>
+                        <li>
+                            <a href="<?= base_url('/') . $row->slug; ?>" class="hover:text-primary transition block line-clamp-1">
+                                <?= $row->title; ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                <?php else : ?>
+                    <li><a href="#jasa-gas" class="hover:text-white transition">Panduan Standar Pipa Gas Komersial</a></li>
+                    <li><a href="#jasa-exhaust" class="hover:text-white transition">Perhitungan Kapasitas Blower Exhaust</a></li>
+                    <li><a href="#jasa-freshair" class="hover:text-white transition">Manfaat Fresh Air pada Dapur Industri</a></li>
+                    <li><a href="#jasa-custom" class="hover:text-white transition">Perawatan Kitchen Equipment SUS 304</a></li>
+                <?php endif; ?>
+            </ul>
+        </div>
+
+        <!-- Column 3: Dynamic Navigasi Menu -->
+        <div>
+            <h4 class="text-sm font-bold text-white uppercase tracking-wider mb-4 border-l-2 border-primary pl-2">Navigasi Utama</h4>
+            <ul class="space-y-2 text-xs sm:text-sm">
+                <?php if (!empty($menus)) : ?>
+                    <?php foreach ($menus as $menu) : ?>
+                        <li>
+                            <a href="<?= base_url('') . (is_array($menu) ? $menu['slug'] : $menu->slug); ?>" class="hover:text-primary transition block">
+                                <?= is_array($menu) ? $menu['nama_menu'] : $menu->nama_menu; ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                <?php else : ?>
+                    <li><a href="#beranda" class="hover:text-white transition">Beranda</a></li>
+                    <li><a href="#tentang" class="hover:text-white transition">Tentang Kami</a></li>
+                    <li><a href="#layanan" class="hover:text-white transition">Layanan & Jasa</a></li>
+                    <li><a href="#produk" class="hover:text-white transition">Fabrikasi Stainless</a></li>
+                    <li><a href="#portofolio" class="hover:text-white transition">Portofolio</a></li>
+                <?php endif; ?>
+            </ul>
+        </div>
+
+        <!-- Column 4: Office Info & Hours -->
+        <div class="space-y-4">
+            <div>
+                <h4 class="text-sm font-bold text-white uppercase tracking-wider mb-4 border-l-2 border-primary pl-2">Kontak & Workshop</h4>
+                <ul class="space-y-2.5 text-xs sm:text-sm">
+                    <li class="flex items-start">
+                        <i class="fa-solid fa-location-dot text-primary mt-1 mr-2.5 shrink-0"></i>
+                        <span><?= !empty($domain->alamat) ? $domain->alamat : 'Jl. Raya Industri Komersial No. 88, Jabodetabek, Indonesia'; ?></span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fa-solid fa-phone text-primary mr-2.5 shrink-0"></i>
+                        <span><?= !empty($domain->telepon) ? $domain->telepon : ($this->domain->telepon ?? '+62 812-3456-7890'); ?></span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fa-solid fa-envelope text-primary mr-2.5 shrink-0"></i>
+                        <span><?= !empty($domain->email) ? $domain->email : 'info@solusidapurrestoran.com'; ?></span>
+                    </li>
+                </ul>
+            </div>
+            <div class="pt-2">
+                <span class="text-xs text-gray-300 font-semibold block">Jam Operasional:</span>
+                <span class="text-xs text-gray-400 block">Senin - Sabtu: 08:00 - 17:00 WIB</span>
+                <span class="text-xs text-red-400 font-semibold block mt-0.5">Emergency Service: 24 Jam</span>
             </div>
         </div>
+
     </div>
-    <!-- Footer End-->
+
+    <!-- Copyright Bar -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 border-t border-slate-800 text-center text-xs text-gray-500">
+        <p>&copy; <?= date('Y'); ?> <?= !empty($domain->title) ? $domain->title : ($domain->meta_title ?? 'PT Solusi Dapur Restoran'); ?>. Hak Cipta Dilindungi Undang-Undang.</p>
+        <p class="mt-1 text-slate-600">
+            Powered by <a href="<?= base_url(); ?>" class="text-slate-500 hover:text-slate-400"><?= !empty($domain->domain_name) ? $domain->domain_name : 'solusidapurrestoran.com'; ?></a>
+        </p>
+    </div>
 </footer>
 
-<!-- Search model Begin -->
-<div class="search-model-box">
-    <div class="d-flex align-items-center h-100 justify-content-center">
-        <div class="search-close-btn">+</div>
-        <form class="search-model-form">
-            <input type="text" id="search-input" placeholder="Searching key.....">
-        </form>
-    </div>
-</div>
-<!-- Search model end -->
+<!-- Scripts: jQuery & Intersection Observer Animation -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- JS here -->
-<script src="<?= base_url('assets/news'); ?>/assets/js/vendor/modernizr-3.5.0.min.js"></script>
-<!-- Jquery, Popper, Bootstrap -->
-<script src="<?= base_url('assets/news'); ?>/assets/js/vendor/jquery-1.12.4.min.js"></script>
-<script src="<?= base_url('assets/news'); ?>/assets/js/popper.min.js"></script>
-<script src="<?= base_url('assets/news'); ?>/assets/js/bootstrap.min.js"></script>
-<!-- Jquery Mobile Menu -->
-<script src="<?= base_url('assets/news'); ?>/assets/js/jquery.slicknav.min.js"></script>
-
-<!-- Jquery Slick , Owl-Carousel Plugins -->
-<script src="<?= base_url('assets/news'); ?>/assets/js/owl.carousel.min.js"></script>
-<script src="<?= base_url('assets/news'); ?>/assets/js/slick.min.js"></script>
-<!-- Date Picker -->
-<script src="<?= base_url('assets/news'); ?>/assets/js/gijgo.min.js"></script>
-<!-- One Page, Animated-HeadLin -->
-<script src="<?= base_url('assets/news'); ?>/assets/js/wow.min.js"></script>
-<script src="<?= base_url('assets/news'); ?>/assets/js/animated.headline.js"></script>
-<script src="<?= base_url('assets/news'); ?>/assets/js/jquery.magnific-popup.js"></script>
-
-<!-- Scrollup, nice-select, sticky -->
-<script src="<?= base_url('assets/news'); ?>/assets/js/jquery.scrollUp.min.js"></script>
-<script src="<?= base_url('assets/news'); ?>/assets/js/jquery.nice-select.min.js"></script>
-<script src="<?= base_url('assets/news'); ?>/assets/js/jquery.sticky.js"></script>
-
-<!-- contact js -->
-<script src="<?= base_url('assets/news'); ?>/assets/js/contact.js"></script>
-<script src="<?= base_url('assets/news'); ?>/assets/js/jquery.form.js"></script>
-<script src="<?= base_url('assets/news'); ?>/assets/js/jquery.validate.min.js"></script>
-<script src="<?= base_url('assets/news'); ?>/assets/js/mail-script.js"></script>
-<script src="<?= base_url('assets/news'); ?>/assets/js/jquery.ajaxchimp.min.js"></script>
-
-<!-- Jquery Plugins, main Jquery -->
-<script src="<?= base_url('assets/news'); ?>/assets/js/plugins.js"></script>
-<script src="<?= base_url('assets/news'); ?>/assets/js/main.js"></script>
-
-<style>
-    .bg-primary {
-        background-color: <?= $primary_color; ?> !important;
+<script>
+    // Toggle Mobile Main Menu
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (menuBtn && mobileMenu) {
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
     }
 
-    .text-primary {
-        color: <?= $primary_color; ?> !important;
+    // Toggle Mobile Services Submenu Accordion
+    const mobileServicesBtn = document.getElementById('mobile-services-btn');
+    const mobileServicesMenu = document.getElementById('mobile-services-menu');
+    const mobileServicesArrow = document.getElementById('mobile-services-arrow');
+
+    if (mobileServicesBtn && mobileServicesMenu) {
+        mobileServicesBtn.addEventListener('click', () => {
+            mobileServicesMenu.classList.toggle('hidden');
+            if (mobileServicesArrow) {
+                mobileServicesArrow.classList.toggle('rotate-180');
+            }
+        });
     }
 
-    .border-primary {
-        border-color: <?= $primary_color; ?> !important;
-    }
-</style>
+    // Intersection Observer untuk Animate.css saat Scroll
+    const revealElements = document.querySelectorAll('.reveal');
+    if (revealElements.length > 0) {
+        const observer = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    const animClass = el.getAttribute('data-animate') || 'animate__fadeInUp';
+                    el.classList.remove('reveal');
+                    el.classList.add('animate__animated', animClass);
+                    obs.unobserve(el);
+                }
+            });
+        }, {
+            threshold: 0.12
+        });
 
+        revealElements.forEach(el => observer.observe(el));
+    }
+
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    primary: '<?= $primary_color; ?>',
+                    navy: '<?= $navy_color; ?>',
+                },
+                fontFamily: {
+                    sans: ['Inter', 'sans-serif'],
+                }
+            }
+        }
+    }
+
+    // Typing Effect Support jika elemen typing-text tersedia di view
+    const typingElement = document.getElementById("typing-text");
+    if (typingElement) {
+        const texts = [
+            "Instalasi Ducting Exhaust Dapur Restoran",
+            "Fabrikasi Stainless Steel Food Grade SUS 304",
+            "Pemasangan Central Pipa Gas Komersial Standar SNI"
+        ];
+
+        let textIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+
+        function typeEffect() {
+            const currentText = texts[textIndex];
+
+            if (!isDeleting) {
+                typingElement.textContent = currentText.substring(0, charIndex + 1);
+                charIndex++;
+
+                if (charIndex === currentText.length) {
+                    setTimeout(() => isDeleting = true, 1800);
+                }
+            } else {
+                typingElement.textContent = currentText.substring(0, charIndex - 1);
+                charIndex--;
+
+                if (charIndex === 0) {
+                    isDeleting = false;
+                    textIndex = (textIndex + 1) % texts.length;
+                }
+            }
+
+            setTimeout(typeEffect, isDeleting ? 35 : 75);
+        }
+
+        typeEffect();
+    }
+</script>
 </body>
 
 </html>

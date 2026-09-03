@@ -79,17 +79,10 @@ $robots = ($status == 404) ? 'noindex,follow' : ($domain->robots_index ?? 'index
     <!-- Template Stylesheet -->
     <link href="<?= base_url('assets/weldork/css/style.css'); ?>" rel="stylesheet">
 
-    <!-- JSON-LD Schema Markup -->
-    <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            "name": "<?= $domain->meta_title ?? ($domain->domain_name ?? 'Weldork'); ?>",
-            "url": "<?= base_url(); ?>",
-            "logo": "<?= base_url('assets/uploads/img/' . ($domain->logo ?? ($domain->image_domain ?? 'default.png'))); ?>",
-            "sameAs": []
-        }
-    </script>
+    <?= !empty($domain->link_google_tag) ? $domain->link_google_tag : ''; ?>
+    <?= !empty($domain->link_google_analytics) ? $domain->link_google_analytics : ''; ?>
+    <?= !empty($domain->link_event_snippet) ? $domain->link_event_snippet : ''; ?>
+
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",

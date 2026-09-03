@@ -28,7 +28,7 @@
                 </thead>
                 <tbody>
                     <?php
-                    $modul = $this->Halal_model->fetch_data('user_menu')->result();
+                    $modul = $this->User_model->fetch_data('user_menu')->result();
                     $no = 1;
                     foreach ($modul as $m):
                     ?>

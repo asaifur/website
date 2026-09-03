@@ -89,6 +89,9 @@ $robots = ($status == 404) ? 'noindex,follow' : 'index,follow';
         }
     </script>
 
+    <?= !empty($domain->link_google_tag) ? $domain->link_google_tag : ''; ?>
+    <?= !empty($domain->link_google_analytics) ? $domain->link_google_analytics : ''; ?>
+    <?= !empty($domain->link_event_snippet) ? $domain->link_event_snippet : ''; ?>
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",

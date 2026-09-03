@@ -4,8 +4,9 @@ $payload = [];
 if (!empty($section->data_payload)) {
     $payload = is_array($section->data_payload) ? $section->data_payload : json_decode($section->data_payload, true);
 }
-// 2. Ekstrak array 'services' dari dalam payload
+// 2. Ekstrak array 'services' dan 'featured_post' dari dalam payload
 $services = $payload['services'] ?? [];
+$featured_post = $payload['featured_post'] ?? null;
 
 // 3. Data Fallback / Header Section
 $dom_id   = !empty($section->span) ? $section->span : (!empty($section->section_id_dom) ? $section->section_id_dom : 'menu-kopi');
@@ -37,6 +38,51 @@ $domain_name = is_object($domain) ? ($domain->domain_name ?? 'Amiraw Kopi') : ($
                 <p class="text-slate-600 text-sm sm:text-base leading-relaxed"><?= nl2br($content); ?></p>
             <?php endif; ?>
         </div>
+
+        <!-- Featured Post Banner (Jika ada di data_payload) -->
+        <?php if (!empty($featured_post)) :
+            $fp_title = $featured_post['title'] ?? '';
+            $fp_excerpt = $featured_post['excerpt'] ?? ($featured_post['content'] ?? '');
+            $fp_image = $featured_post['image'] ?? '';
+            $fp_author = $featured_post['author'] ?? 'Admin';
+            $fp_date = $featured_post['date'] ?? date('Y');
+            $fp_url = $featured_post['url'] ?? '#';
+
+            if (!empty($fp_image)) {
+                $fp_img_url = filter_var($fp_image, FILTER_VALIDATE_URL) ? $fp_image : base_url('assets/uploads/img/' . $fp_image);
+            }
+        ?>
+            <div class="mb-16 bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 lg:flex items-center reveal" data-animate="<?= $anim; ?>">
+                <?php if (!empty($fp_image)) : ?>
+                    <div class="lg:w-1/2 h-64 lg:h-auto overflow-hidden relative">
+                        <img src="<?= $fp_img_url; ?>" alt="<?= htmlspecialchars($fp_title); ?>" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                        <span class="absolute top-4 left-4 bg-navy text-white text-[10px] font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-full shadow-md">
+                            Featured Highlight
+                        </span>
+                    </div>
+                <?php endif; ?>
+                <div class="lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center space-y-4">
+                    <div class="flex items-center gap-3 text-xs text-slate-400 font-semibold uppercase tracking-wider">
+                        <span><i class="fa-regular fa-user mr-1"></i> <?= $fp_author; ?></span>
+                        <span>•</span>
+                        <span><i class="fa-regular fa-calendar mr-1"></i> <?= $fp_date; ?></span>
+                    </div>
+                    <h3 class="text-2xl lg:text-3xl font-bold text-navy hover:text-primary transition-colors">
+                        <a href="<?= $fp_url; ?>"><?= $fp_title; ?></a>
+                    </h3>
+                    <?php if (!empty($fp_excerpt)) : ?>
+                        <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                            <?= $fp_excerpt; ?>
+                        </p>
+                    <?php endif; ?>
+                    <div class="pt-2">
+                        <a href="<?= $fp_url; ?>" class="inline-flex items-center gap-2 text-xs font-bold text-primary uppercase tracking-wider bg-primary/10 hover:bg-primary hover:text-white px-5 py-3 rounded-xl transition-colors">
+                            Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
 
         <!-- Services / Menu Grid -->
         <?php if (!empty($services) && is_array($services)) : ?>

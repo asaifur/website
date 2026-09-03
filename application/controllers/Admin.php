@@ -432,7 +432,6 @@ class Admin extends MY_Controller
 
         // Cek User
         $user = $this->User_model->check_login($username);
-
         if ($user) {
             // Cek Domain User
             if ($user['id_domain'] != $domain->id) {

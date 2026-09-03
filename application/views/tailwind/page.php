@@ -33,15 +33,7 @@
                             <img src="<?= base_url('assets/uploads/img/') . $domain->image_domain; ?>" alt="Logo" class="max-h-12 w-auto object-contain">
                         </a>
                     <?php else : ?>
-                        <a href="<?= base_url(); ?>" class="flex items-center space-x-3 group">
-                            <div class="w-12 h-12 bg-primary flex items-center justify-center rounded text-white font-black text-2xl tracking-tighter shadow-md group-hover:bg-primaryDark transition">
-                                SDR
-                            </div>
-                            <div>
-                                <span class="text-xl font-extrabold tracking-tight text-navy block leading-none">SOLUSI DAPUR</span>
-                                <span class="text-xs font-semibold text-primary tracking-widest uppercase">RESTORAN INDONESIA</span>
-                            </div>
-                        </a>
+
                     <?php endif; ?>
                 </div>
 
